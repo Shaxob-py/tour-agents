@@ -5,7 +5,6 @@ from database import Model
 
 
 class Trip(Model):
-    id  = mapped_column(Integer, primary_key=True, autoincrement=True)
     name = mapped_column(String(255),nullable=True)
     description = mapped_column(String(255), nullable=True)
     country = mapped_column(String(255), nullable=True)
