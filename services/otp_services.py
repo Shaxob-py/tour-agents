@@ -28,8 +28,8 @@ class OtpService:
 
     def send_otp_by_email(self, phone_number: str, code: str,telegram_id:str, expire_time=60,) -> tuple[bool, int]:
         _key = self._get_otp_email_key(phone_number)
-        self.redis_client.set(_key, code,telegram_id, expire_time)
-        verification_send_telegram(phone_number, code)
+        self.redis_client.set(_key, code,expire_time)
+        verification_send_telegram(telegram_id,code)
         return True, 0
     #
     # def save_user_before_registration(self, email: str, user_data: dict, expire_time=120):
