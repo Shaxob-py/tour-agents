@@ -1,6 +1,5 @@
 import requests
 from random import randint
-from jinja2 import Environment, FileSystemLoader
 from core.config import settings
 
 

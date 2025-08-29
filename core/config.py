@@ -3,11 +3,11 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    # POSTGRES_HOST: str = Field(default='localhost')
-    # POSTGRES_PORT: int = Field(default=5432)
-    # POSTGRES_DATABASE: str = Field(default='postgres')
-    # POSTGRES_USER: str = Field(default='postgres')
-    # POSTGRES_PASSWORD: str = Field(default='1')
+    POSTGRES_HOST: str = Field(default='localhost')
+    POSTGRES_PORT: int = Field(default=5432)
+    POSTGRES_DATABASE: str = Field(default='postgres')
+    POSTGRES_USER: str = Field(default='postgres')
+    POSTGRES_PASSWORD: str = Field(default='1')
 
     TELEGRAM_BOT_TOKEN: str = Field()
 
@@ -20,7 +20,7 @@ class Settings(BaseSettings):
 
     AI_API_KEY: str = Field()
     AI_MODEL:str = Field()
-
+    #
     # EMAIL_HOST: str = Field('smtp.gmail.com')
     # EMAIL_PORT: int = Field(465)
     # EMAIL_USER: EmailStr = Field()
