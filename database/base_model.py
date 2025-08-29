@@ -1,6 +1,8 @@
+import uuid
 from datetime import datetime
 
-from sqlalchemy import DateTime, func, update as sqlalchemy_update, select, delete as sqlalchemy_delete
+from sqlalchemy import DateTime, func, update as sqlalchemy_update, select, delete as sqlalchemy_delete, text
+from sqlalchemy.dialects.postgresql.base import UUID
 from sqlalchemy.ext.asyncio import AsyncAttrs, create_async_engine, async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, declared_attr, selectinload
 
@@ -10,6 +12,7 @@ from core.config import settings
 class Base(AsyncAttrs, DeclarativeBase):
     @declared_attr
     def __tablename__(self):
+
         _name = self.__name__
         _new_name = _name[0]
         for i in _name[1:]:
@@ -103,6 +106,11 @@ class AbstractClass:
 
 
 class Model(Base, AbstractClass):
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        server_default=text("uuid_generate_v4()")
+)
     __abstract__ = True
 
 
