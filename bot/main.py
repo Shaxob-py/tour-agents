@@ -16,7 +16,7 @@ dp = Dispatcher()
 # Command handler
 @dp.message(Command("start"))
 async def command_start_handler(message: Message) -> None:
-    await message.answer("telefon raqamingizni kroting", reply_markup=phone_number())
+    await message.answer("telefon raqamingizni kriting", reply_markup=phone_number())
 
 
 async def main() -> None:
