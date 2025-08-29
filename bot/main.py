@@ -1,12 +1,16 @@
 import asyncio
 from os import getenv
 
-from aiogram import Bot, Dispatcher
+from aiogram import Bot, Dispatcher, F
 from aiogram.filters import Command
 from aiogram.types import Message
+from fastapi import Depends
 
 from bot.reply_markup import phone_number
 from core.config import settings
+from routers.auth import otp_service
+from services.otp_services import OtpService
+from utils.utils import generate_code
 
 TOKEN = settings.TELEGRAM_BOT_TOKEN
 
@@ -17,6 +21,13 @@ dp = Dispatcher()
 @dp.message(Command("start"))
 async def command_start_handler(message: Message) -> None:
     await message.answer("telefon raqamingizni kriting", reply_markup=phone_number())
+
+
+@dp.message(F.contac)
+async def command_start_handler(message: Message, service: OtpService = Depends(otp_service)) -> None:
+    code = generate_code()
+    await message.answer(f' sizni maxfiy kodingiz {code}')
+    service.send_otp_by_email(code, message.user.phone_number)
 
 
 async def main() -> None:

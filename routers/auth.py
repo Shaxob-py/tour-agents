@@ -2,7 +2,6 @@ from fastapi import APIRouter
 from fastapi.params import Depends
 from fastapi.responses import ORJSONResponse
 from starlette import status
-
 from database import User
 from schemas.auth import RegisterSchema
 from services.otp_services import OtpService
@@ -31,8 +30,7 @@ async def login_view(data : RegisterSchema ,service: OtpService = Depends(otp_se
         )
     except Exception as e:
         return ORJSONResponse(
-            {'message': 'bot ga start bosing :https://t.me/check_menssage_bot'},
-        )
+            {'message': 'bot ga start bosing :https://t.me/check_menssage_bot'},)
 
 @auth_router.get('/verification-code')
 async def login_view(code: str, service: OtpService = Depends(otp_service)):

@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     JWT_ACCESS_TOKEN_EXPIRE_TIME: int = Field(default=60)
     JWT_REFRESH_TOKEN_EXPIRE_TIME: int = Field(default=3600)
 
-    AI_API_KEY: str = Field()
+    GEMINI_AI_API_KEY: str = Field()
     AI_MODEL:str = Field()
     #
     # EMAIL_HOST: str = Field('smtp.gmail.com')
