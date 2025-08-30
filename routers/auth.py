@@ -2,6 +2,8 @@ from fastapi import APIRouter
 from fastapi.params import Depends
 from fastapi.responses import ORJSONResponse
 from starlette import status
+
+from core.config import settings
 from database import User
 from schemas.auth import RegisterSchema
 from services.otp_services import OtpService
@@ -11,34 +13,31 @@ auth_router = APIRouter()
 
 
 def otp_service():
-    return OtpService()
+    return OtpService(settings.TELEGRAM_BOT_TOKEN)
 
 
 @auth_router.post('/auth')
 async def login_view(data: RegisterSchema, service: OtpService = Depends(otp_service)):
     phone_user = str(data.phone)
-    user = await User.get_by_phone_number(phone_user)
     telegram_id = await User.get_telegram_id_by_phone_number(phone_user)
-    code = generate_code()
-    if user is not None:
-        service.send_otp_by_telegram(telegram_id,code)
+    code = generate_code()  # int or str
+
+    # ensure code is str
+    code_str = str(code)
+
+    if telegram_id is None:
+        return ORJSONResponse({'message': 'Telegram ID not found for this phone'}, status_code=400)
+
+    # IMPORTANT: call with (code, telegram_id) - same order as service method
+    success = await service.send_otp_by_telegram(code_str, telegram_id)
+
+    if success:
+        return ORJSONResponse({'message': 'Check your telegram to verify your account'})
+    else:
         return ORJSONResponse(
-            {'message': 'Check your telegram to verify your account'},
+            {'message': 'Failed to send OTP. Check that user pressed /start and bot token is correct.'},
+            status_code=400
         )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 @auth_router.get('/verification-code')

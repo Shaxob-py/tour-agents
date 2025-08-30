@@ -16,7 +16,7 @@ async def lifespan(_app: FastAPI):
     await db.create_all()
     print('project ishga tushdi')
     yield
-    await db.drop_all()
+    # await db.drop_all()
     print('project toxtadi')
 
 
