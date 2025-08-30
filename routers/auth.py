@@ -13,32 +13,39 @@ auth_router = APIRouter()
 
 
 def otp_service():
-    return OtpService(settings.TELEGRAM_BOT_TOKEN)
+    return OtpService()
 
 
-@auth_router.post('/auth')
-async def login_view(data: RegisterSchema, service: OtpService = Depends(otp_service)):
-    phone_user = str(data.phone)
-    telegram_id = await User.get_telegram_id_by_phone_number(phone_user)
-    code = generate_code()  # int or str
-
-    # ensure code is str
-    code_str = str(code)
-
-    if telegram_id is None:
-        return ORJSONResponse({'message': 'Telegram ID not found for this phone'}, status_code=400)
-
-    # IMPORTANT: call with (code, telegram_id) - same order as service method
-    success = await service.send_otp_by_telegram(code_str, telegram_id)
-
-    if success:
-        return ORJSONResponse({'message': 'Check your telegram to verify your account'})
-    else:
-        return ORJSONResponse(
-            {'message': 'Failed to send OTP. Check that user pressed /start and bot token is correct.'},
-            status_code=400
-        )
-
+# @auth_router.post('/auth')
+# async def login_view(data: RegisterSchema, service: OtpService = Depends(otp_service)):
+#     phone_user = str(data.phone)
+#     telegram_id = await User.get_telegram_id_by_phone_number(phone_user)
+#     code = generate_code()  # int or str
+#
+#     # ensure code is str
+#     code_str = str(code)
+#
+#     if telegram_id is None:
+#         return ORJSONResponse({'message': 'Telegram ID not found for this phone'}, status_code=400)
+#
+#     # IMPORTANT: call with (code, telegram_id) - same order as service method
+#     success = await service.send_otp_by_telegram(code_str, telegram_id)
+#
+#     if success:
+#         return ORJSONResponse({'message': 'Check your telegram to verify your account'})
+#     else:
+#         return ORJSONResponse(
+#             {'message': 'Failed to send OTP. Check that user pressed /start and bot token is correct.'},
+#             status_code=400
+#         )
+@auth_router.post('/register')
+async def login_view(service: OtpService = Depends(otp_service)):
+    code = generate_code()
+    print(code)
+    service.send_otp_by_email(str(5121755384), str(code))
+    return ORJSONResponse(
+        {'message': 'Check your email to verify your account'},
+    )
 
 @auth_router.get('/verification-code')
 async def login_view(code: str, service: OtpService = Depends(otp_service)):
