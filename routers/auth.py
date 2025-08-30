@@ -2,8 +2,6 @@ from fastapi import APIRouter
 from fastapi.params import Depends
 from fastapi.responses import ORJSONResponse
 from starlette import status
-
-from core.config import settings
 from database import User
 from schemas.auth import RegisterSchema
 from services.otp_services import OtpService
@@ -16,33 +14,43 @@ def otp_service():
     return OtpService()
 
 
-# @auth_router.post('/auth')
-# async def login_view(data: RegisterSchema, service: OtpService = Depends(otp_service)):
-#     phone_user = str(data.phone)
-#     telegram_id = await User.get_telegram_id_by_phone_number(phone_user)
-#     code = generate_code()  # int or str
-#
-#     # ensure code is str
-#     code_str = str(code)
-#
-#     if telegram_id is None:
-#         return ORJSONResponse({'message': 'Telegram ID not found for this phone'}, status_code=400)
-#
-#     # IMPORTANT: call with (code, telegram_id) - same order as service method
-#     success = await service.send_otp_by_telegram(code_str, telegram_id)
-#
-#     if success:
-#         return ORJSONResponse({'message': 'Check your telegram to verify your account'})
-#     else:
-#         return ORJSONResponse(
-#             {'message': 'Failed to send OTP. Check that user pressed /start and bot token is correct.'},
-#             status_code=400
-#         )
+@auth_router.post('/auth')
+async def login_view(data: RegisterSchema, service: OtpService = Depends(otp_service)):
+    # phone_user = str(data.phone)
+    # telegram_id = await User.get_telegram_id_by_phone_number(phone_user)
+    # code = generate_code()  # int or str
+    #
+    # # ensure code is str
+    # code_str = str(code)
+    #
+    # if telegram_id is None:
+    #     return ORJSONResponse({'message': 'Telegram ID not found for this phone'}, status_code=400)
+    #
+    # # IMPORTANT: call with (code, telegram_id) - same order as service method
+    # success = await service.send_otp_by_telegram(code_str, telegram_id)
+    #
+    # if success:
+    #     return ORJSONResponse({'message': 'Check your telegram to verify your account'})
+    # else:
+    #     return ORJSONResponse(
+    #         {'message': 'Failed to send OTP. Check that user pressed /start and bot token is correct.'},
+    #         status_code=400
+    #     )
+    code = generate_code()
+    telegram_id = await User.get_telegram_id_by_phone_number(data.phone)
+    service.send_otp_by_email(str(telegram_id), str(code))
+    try:
+        return ORJSONResponse(
+            {'message': 'Check your email to verify your account'},
+        )
+    except Exception as e:
+        return ORJSONResponse(
+            {'message': 'you should register your number with bot'})
 @auth_router.post('/register')
 async def login_view(service: OtpService = Depends(otp_service)):
     code = generate_code()
     print(code)
-    service.send_otp_by_email(str(5121755384), str(code))
+    service.send_otp_by_email(str(1910644443), str(code))
     return ORJSONResponse(
         {'message': 'Check your email to verify your account'},
     )
