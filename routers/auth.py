@@ -19,24 +19,13 @@ async def login_view(data: RegisterSchema, service: OtpService = Depends(otp_ser
     phone_user = str(data.phone)
     user = await User.get_by_phone_number(phone_user)
     telegram_id = await User.get_telegram_id_by_phone_number(phone_user)
-
-    if user is not None:
-        return ORJSONResponse(
-            {'message': 'Username already registered'},
-            status.HTTP_400_BAD_REQUEST
-        )
-
     code = generate_code()
-    try:
-        # передаём все аргументы: phone_number, code, telegram_id
-        service.send_otp_by_email(phone_user, str(code), telegram_id)
+    if user is not None:
+        service.send_otp_by_telegram(telegram_id,code)
         return ORJSONResponse(
             {'message': 'Check your telegram to verify your account'},
         )
-    except Exception:
-        return ORJSONResponse(
-            {'message': 'bot ga start bosing : https://t.me/check_menssage_bot'},
-        )
+
 
 
 

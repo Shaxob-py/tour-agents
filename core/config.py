@@ -38,3 +38,4 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+print(settings.GEMINI_AI_API_KEY,settings.AI_MODEL,settings.TELEGRAM_BOT_TOKEN)

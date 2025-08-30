@@ -8,9 +8,7 @@ from fastapi import Depends
 
 from bot.reply_markup import phone_number
 from core.config import settings
-from routers.auth import otp_service
-from services.otp_services import OtpService
-from utils.utils import generate_code
+from database import User
 
 TOKEN = settings.TELEGRAM_BOT_TOKEN
 
@@ -24,14 +22,11 @@ async def command_start_handler(message: Message) -> None:
 
 @dp.message(F.contact)
 async def handle_contact(message: Message) -> None:
-    code = generate_code()
-    phone_number = message.contact.phone_number
-    telegram_id = message.from_user.id
+    await message.answer(f"Siz royxattan ottingiz")
+    phone = {'phone':message.contact.phone_number}
+    await User.create(**phone)
 
-    await message.answer(f"Sizning maxfiy kodingiz: {code}")
 
-    # сохраняем код в Redis и отправляем в бот
-    otp_service.send_otp_by_email(phone_number, str(code), str(telegram_id))
 
 
 async def main() -> None:

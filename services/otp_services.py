@@ -2,7 +2,7 @@ from orjson import orjson
 from redis import Redis
 
 from core.config import settings
-from utils.utils import verification_send_telegram
+from utils.utils import verification_send_telegram, send_telegram_message
 
 
 class OtpService:
@@ -12,9 +12,10 @@ class OtpService:
     # def _get_otp_phone_key(self, phone: str) -> str:
     #     return f"send_otp_phone:{phone}"
     #
-    def _get_otp_email_key(self, phone: str) -> str:
-        return f"send_otp_email:{phone}"
-    # 
+    def _get_otp_telegram_key(self, telegram_id: int) -> str:
+        return f"send_otp_telegram:{telegram_id}"
+
+    #
     # def _get_registration_key(self, email: str) -> str:
     #     return f"registration:{email}"
     #
@@ -26,8 +27,11 @@ class OtpService:
     #     self.redis_client.set(_key, code, expire_time)
     #     return True, 0
 
-    def send_otp_by_email(self, phone_number: str, code: str, telegram_id: str, expire_time=60) -> tuple[bool, int]:
-        _key = self._get_otp_email_key(phone_number)
+    def send_otp_by_telegram(self, code: str, telegram_id: int, expire_time=60) -> tuple[bool, int]:
+        _key = self._get_otp_telegram_key(telegram_id)
+        _ttl = self.redis_client.ttl(_key)
+        if _ttl > 0:
+            return False, _ttl
         self.redis_client.set(_key, code, ex=expire_time)
         verification_send_telegram(telegram_id, code)
         return True, 0
@@ -61,4 +65,3 @@ class OtpService:
     #         user_data = orjson.loads(user_data)
     #     else:
     #         user_data = {}
-
