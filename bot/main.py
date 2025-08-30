@@ -22,12 +22,16 @@ dp = Dispatcher()
 async def command_start_handler(message: Message) -> None:
     await message.answer("telefon raqamingizni kriting", reply_markup=phone_number())
 
-
-@dp.message(F.contac)
-async def command_start_handler(message: Message, service: OtpService = Depends(otp_service)) -> None:
+@dp.message(F.contact)
+async def handle_contact(message: Message) -> None:
     code = generate_code()
-    await message.answer(f' sizni maxfiy kodingiz {code}')
-    service.send_otp_by_email(code, message.user.phone_number)
+    phone_number = message.contact.phone_number
+    telegram_id = message.from_user.id
+
+    await message.answer(f"Sizning maxfiy kodingiz: {code}")
+
+    # сохраняем код в Redis и отправляем в бот
+    otp_service.send_otp_by_email(phone_number, str(code), str(telegram_id))
 
 
 async def main() -> None:
