@@ -23,8 +23,9 @@ async def command_start_handler(message: Message) -> None:
 @dp.message(F.contact)
 async def handle_contact(message: Message) -> None:
     await message.answer(f"Siz royxattan ottingiz")
-    phone = {'phone':message.contact.phone_number}
-    await User.create(**phone)
+    data = {'phone_number':message.contact.phone_number,
+            'telegram_id':message.from_user.id,}
+    await User.create(**data)
 
 
 

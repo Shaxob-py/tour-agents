@@ -10,7 +10,7 @@ from database.base_model import db
 
 class User(Model):
     phone_number: Mapped[str] = mapped_column(String(25), nullable=True, unique=True)
-    telegram_id : Mapped[int] = mapped_column(BIGINT,nullable=True)
+    telegram_id : Mapped[int] = mapped_column(BIGINT, unique=True)
 
     @classmethod
     async def get_by_phone_number(cls, phone_number: str):
