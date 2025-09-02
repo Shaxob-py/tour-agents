@@ -26,11 +26,23 @@ class OtpService:
         self.redis_client.set(_key, code, expire_time)
         return True, 0
 
-    def send_otp_by_email(self, chat_id: str, code: str, expire_time=60) -> tuple[bool, int]:
-        self.redis_client.set(code,chat_id, ex=expire_time)
+    def send_otp_by_email(self, phone, chat_id: str, code: str, expire_time=60) -> tuple[bool, int]:
+        _key = self._get_registration_key(phone)
+        _ttl = self.redis_client.ttl(_key)
+        if _ttl > 0:
+            return False, _ttl
+        self.redis_client.set(_key, code, ex=expire_time)
         verification_send_telegram(chat_id, code)
         return True, 0
 
+    # _key = self._get_otp_email_key(email)
+    # # _ttl = self.redis_client.ttl(_key)
+    # # if _ttl > 0:
+    # #     return False, _ttl
+    # self.redis_client.set(_key, code, expire_time)
+    #
+    # verification_send_email(email, code)
+    # return True, 0
     def save_user_before_registration(self, email: str, user_data: dict, expire_time=120):
         _key = self._get_registration_key(email)
         _ttl = self.redis_client.ttl(_key)
@@ -49,9 +61,17 @@ class OtpService:
         user_data = orjson.loads(user_data)
         return saved_code == code, user_data
 
-    def verify_code_telegram(self, chat_id: str, code: str) -> bool:
-        saved_code = self.redis_client.get(chat_id)
+    def verify_code_telegram(self, phone: str, code: str) -> tuple[bool, dict | None]:
+        saved_code = self.redis_client.get(self._get_registration_key(phone))
+
         if saved_code:
-            return saved_code.decode() == code
-        print(saved_code, code)
-        return False
+            saved_code = saved_code.decode()
+        else:
+            return False, None
+
+        # user_data olish (agar saqlagan bo‘lsangiz)
+        # raw_user_data = self.redis_client.get(self._get_user_data_key(phone))
+        # user_data = orjson.loads(raw_user_data) if raw_user_data else None
+        user_data = None  # hozircha bo‘sh
+
+        return saved_code == code, user_data

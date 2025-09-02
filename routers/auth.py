@@ -18,7 +18,7 @@ def otp_service():
 async def login_view(data: RegisterSchema, service: OtpService = Depends(otp_service)):
     code = generate_code()
     telegram_id = await User.get_telegram_id_by_phone_number(data.phone)
-    service.send_otp_by_email( str(telegram_id),str(code))
+    service.send_otp_by_email(data.phone,   telegram_id,code)
     try:
         return ORJSONResponse(
             {'message': 'Check your email to verify your account'},
@@ -39,8 +39,21 @@ async def login_view(data: RegisterSchema, service: OtpService = Depends(otp_ser
 
 
 @auth_router.get('/verification-code')
-async def login_view(code: str, service: OtpService = Depends(otp_service)):
-    is_verified = service.verify_code_telegram(code)
+async def login_view(phone : str,code: str, service: OtpService = Depends(otp_service)):
+    # telegram_id = await User.get_telegram_id_by_phone_number(code)
+    # is_verified = service.verify_code_telegram(telegram_id, code)
+    # print(code, telegram_id, is_verified)
+    # if is_verified:
+    #     # await User.create(**user_data)
+    #     return ORJSONResponse(
+    #         {'message': 'User successfully registered'}
+    #     )
+    # return ORJSONResponse(
+    #     {'message': 'Invalid or expired code'},
+    #     status.HTTP_400_BAD_REQUEST
+    # )
+    is_verified, user_data = service.verify_code_telegram(phone, code)
+    print(is_verified,user_data)
     if is_verified:
         # await User.create(**user_data)
         return ORJSONResponse(
