@@ -20,7 +20,7 @@ async def lifespan(_app: FastAPI):
     print('project toxtadi')
 
 
-app = FastAPI(docs_url='/', root_path='/api', title="P30 FastAPI", lifespan=lifespan)
+app = FastAPI(docs_url='/', root_path='/api', title="P30 FastAPI", lifespan=lifespan,)
 
 
 @app.exception_handler(RequestValidationError)
