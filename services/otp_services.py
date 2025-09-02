@@ -27,12 +27,7 @@ class OtpService:
         return True, 0
 
     def send_otp_by_email(self, chat_id: str, code: str, expire_time=60) -> tuple[bool, int]:
-        _key = self._get_otp_email_key(chat_id)
-        # _ttl = self.redis_client.ttl(_key)
-        # if _ttl > 0:
-        #     return False, _ttl
-        self.redis_client.set(_key, code, expire_time)
-
+        self.redis_client.set(code,chat_id, ex=expire_time)
         verification_send_telegram(chat_id, code)
         return True, 0
 
@@ -54,15 +49,9 @@ class OtpService:
         user_data = orjson.loads(user_data)
         return saved_code == code, user_data
 
-    def verify_code_telegram(self, code: str) -> tuple[bool, dict]:
-        saved_code = self.redis_client.get("otp:telegram:code")
-        user_data = self.redis_client.get("otp:telegram:user")
-
+    def verify_code_telegram(self, chat_id: str, code: str) -> bool:
+        saved_code = self.redis_client.get(chat_id)
         if saved_code:
-            saved_code = saved_code.decode()
-
-        if user_data:
-            user_data = orjson.loads(user_data)
-        else:
-            user_data = {}
-
+            return saved_code.decode() == code
+        print(saved_code, code)
+        return False
