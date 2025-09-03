@@ -4,6 +4,7 @@ from fastapi import APIRouter
 from fastapi.params import Depends
 from fastapi.responses import ORJSONResponse
 
+# from routers.ai import handle_image
 from schemas.tour import TourSchema
 from services.ai_servise import AIService
 from utils.utils import get_travel_days
@@ -24,8 +25,8 @@ async def create_tour(
                    f'approximate cost for {days} days.')
     return_text = await service.ai_text_generator(text_for_ai)
 
-    image = await service.handle_image(f'Create photo{data.to} ')
-    return ORJSONResponse({
-        'messages': return_text,
-        'image_base64': image
-    })
+    image = await service.handle_image(f'Create photo {data.to}')
+
+    print(image)
+
+    return ORJSONResponse({'messages': return_text})
