@@ -26,6 +26,7 @@ class Settings(BaseSettings):
 
     DEEPSEEK_AI_API_TOKEN: str = Field()
 
+    UNSPLASH_ACCESS_KEY : str = Field()
     #
     # EMAIL_HOST: str = Field('smtp.gmail.com')
     # EMAIL_PORT: int = Field(465)

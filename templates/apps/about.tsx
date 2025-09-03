@@ -22,7 +22,7 @@ const team = [
     name: "David Chen",
     role: "Head of Operations",
     image: "/professional-man-operations-manager-travel.png",
-    bio: "David ensures every trip runs smoothly with his expertise in logistics and customer service excellence.",
+    bio: "David ensures every trips runs smoothly with his expertise in logistics and customer service excellence.",
   },
   {
     name: "Maria Rodriguez",
