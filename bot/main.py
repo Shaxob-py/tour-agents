@@ -18,14 +18,21 @@ dp = Dispatcher()
 async def command_start_handler(message: Message) -> None:
     await message.answer("telefon raqamingizni kriting", reply_markup=phone_number())
 
+
 @dp.message(F.contact)
 async def handle_contact(message: Message) -> None:
-    await message.answer(f"Siz royxattan ottingiz")
-    data = {'phone_number':message.contact.phone_number,
-            'telegram_id':message.from_user.id,}
+    contact = message.contact
+
+    if contact.user_id != message.from_user.id:
+        await message.answer("❌ Faqat o'zingizning telefon raqamingizni yuboring!")
+        return
+
+    data = {
+        'phone_number': contact.phone_number,
+        'telegram_id': message.from_user.id,
+    }
     await User.create(**data)
-
-
+    await message.answer("✅ Royxattan muvaffaqiyatli o'tdingiz!")
 
 
 async def main() -> None:
