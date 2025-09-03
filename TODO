@@ -1,0 +1,15 @@
+1. barcha id -> UUID bolsin
+
+2. modellardagi id lar djangodagidek bolsin
+
+3. requests larni toliq async da yozish
+
+4. alembic ulash
+
+5. bot orqali kirish (botga nomer yuboriladi,
+botdan qaytgan kodni apiga yuborish kerak)
+jwt qaytaradi
+
+
+6. rasm generate qiladigan AI topish
+(joy nomini bersa rasmini chizish kerak)
