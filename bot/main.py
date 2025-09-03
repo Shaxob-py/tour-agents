@@ -26,8 +26,7 @@ async def handle_contact(message: Message) -> None:
     data = {'phone_number':message.contact.phone_number,
             'telegram_id':message.from_user.id,}
     await User.create(**data)
-
-
+    # TODO phone yuborgan user, phone ozinikimi? forward ni tekshirish
 
 
 async def main() -> None:
