@@ -1,13 +1,13 @@
 import base64
 import io
 
+import httpx
 from fastapi import APIRouter
 from starlette.responses import StreamingResponse
 
 from core.config import settings
 from schemas.ai_schema import ChatAiSchema
 from schemas.base_schema import ResponseSchema
-import httpx
 
 ai_router = APIRouter()
 

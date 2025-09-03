@@ -1,11 +1,12 @@
-from sqlalchemy import Integer, String, Date, Float, Boolean, ForeignKey
+from sqlalchemy import String, Date, Float, Boolean
 from sqlalchemy.orm import mapped_column
 
 from database import Model
+from database.base_model import CreatedModel
 
 
-class Trip(Model):
-    name = mapped_column(String(255), nullable=True)
+class Trip(Model,CreatedModel):
+    name = mapped_column(String(255),nullable=True)
     description = mapped_column(String(255), nullable=True)
     country = mapped_column(String(255), nullable=True)
     city = mapped_column(String(255), nullable=True)
@@ -15,10 +16,3 @@ class Trip(Model):
     image_url = mapped_column(String(255), nullable=True)
     is_ai_suggestion = mapped_column(Boolean, nullable=True)
 
-    # TODO created_at updated_at qoshish kk
-
-    # TODO created_by qoshish kk
-
-    # TODO nta rasmli bolishi kk
-
-    # TODO like va dislike qoshish kk faqat login qilgan user uchun

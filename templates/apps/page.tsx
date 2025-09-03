@@ -1,8 +1,8 @@
-import { Navigation } from "@/components/navigation"
-import { HeroSection } from "@/components/hero-section"
-import { FeaturedDestinations } from "@/components/featured-destinations"
-import { Testimonials } from "@/components/testimonials"
-import { Footer } from "@/components/footer"
+import {Navigation} from "@/components/navigation"
+import {HeroSection} from "@/components/hero-section"
+import {FeaturedDestinations} from "@/components/featured-destinations"
+import {Testimonials} from "@/components/testimonials"
+import {Footer} from "@/components/footer"
 
 export default function HomePage() {
   return (

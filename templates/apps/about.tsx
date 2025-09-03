@@ -1,8 +1,8 @@
-import { Navigation } from "@/components/navigation"
-import { Footer } from "@/components/footer"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Award, Users, Globe, Heart } from "lucide-react"
+import {Navigation} from "@/components/navigation"
+import {Footer} from "@/components/footer"
+import {Card, CardContent} from "@/components/ui/card"
+import {Badge} from "@/components/ui/badge"
+import {Award, Globe, Heart, Users} from "lucide-react"
 
 const stats = [
   { icon: Users, label: "Happy Travelers", value: "50,000+" },

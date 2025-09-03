@@ -1,10 +1,8 @@
 import asyncio
-from os import getenv
 
 from aiogram import Bot, Dispatcher, F
 from aiogram.filters import Command
 from aiogram.types import Message
-from fastapi import Depends
 
 from bot.reply_markup import phone_number
 from core.config import settings

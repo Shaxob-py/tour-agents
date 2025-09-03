@@ -1,8 +1,8 @@
-import { Navigation } from "@/components/navigation"
-import { Footer } from "@/components/footer"
-import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Star, Clock, Users } from "lucide-react"
+import {Navigation} from "@/components/navigation"
+import {Footer} from "@/components/footer"
+import {Card, CardContent} from "@/components/ui/card"
+import {Button} from "@/components/ui/button"
+import {Clock, Star, Users} from "lucide-react"
 
 const destinations = [
   {

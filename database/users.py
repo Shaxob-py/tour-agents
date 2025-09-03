@@ -1,6 +1,6 @@
 
 
-from sqlalchemy import Integer, String , select
+from sqlalchemy import String, select
 from sqlalchemy.dialects.mysql import BIGINT
 from sqlalchemy.orm import Mapped, mapped_column
 

@@ -1,4 +1,3 @@
-from orjson import orjson
 from redis import Redis
 
 from core.config import settings
@@ -9,11 +8,8 @@ class OtpService:
     def __init__(self):
         self.redis_client = Redis.from_url(settings.REDIS_URL)
 
-    def _get_registration_key(self, email: str) -> str:
-        return f"registration:{email}"
-
     def send_otp_by_telegram(self, phone, chat_id: int, code: int, expire_time=60) -> tuple[bool, int]:
-        _key = self._get_registration_key(phone)
+        _key = phone
         _ttl = self.redis_client.ttl(_key)
         if _ttl > 0:
             return False, _ttl
@@ -22,16 +18,13 @@ class OtpService:
         return True, 0
 
     def verify_code_telegram(self, phone: str, code: str) -> tuple[bool, dict | None]:
-        saved_code = self.redis_client.get(self._get_registration_key(phone))
+        saved_code = self.redis_client.get(phone)
 
         if saved_code:
-            saved_code = saved_code.decode()
+            saved_code = saved_code.decode()  # noqa
         else:
             return False, None
 
-        # user_data olish (agar saqlagan bo‘lsangiz)
-        # raw_user_data = self.redis_client.get(self._get_user_data_key(phone))
-        # user_data = orjson.loads(raw_user_data) if raw_user_data else None
-        user_data = None  # hozircha bo‘sh
+        user_data = None
 
         return saved_code == code, user_data

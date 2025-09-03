@@ -1,13 +1,13 @@
 "use client"
 
-import { Navigation } from "@/components/navigation"
-import { Footer } from "@/components/footer"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {Navigation} from "@/components/navigation"
+import {Footer} from "@/components/footer"
+import {Button} from "@/components/ui/button"
+import {Input} from "@/components/ui/input"
+import {Label} from "@/components/ui/label"
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
 import Image from "next/image"
-import { useState } from "react"
+import {useState} from "react"
 
 export default function LoginPage() {
   const [phoneNumber, setPhoneNumber] = useState("")

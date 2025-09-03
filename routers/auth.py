@@ -2,6 +2,7 @@ from fastapi import APIRouter
 from fastapi.params import Depends
 from fastapi.responses import ORJSONResponse
 from starlette import status
+
 from database import User
 from schemas.auth import LoginSchema
 from services.otp_services import OtpService
