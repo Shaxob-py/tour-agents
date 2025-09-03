@@ -1,4 +1,4 @@
-
+from datetime import datetime
 from random import randint
 
 import httpx
@@ -18,3 +18,9 @@ def generate_code() -> int:
 def verification_send_telegram(chat_id: int, code: int):
     text = f"🔑 Your verification code is: {code}"
     return send_telegram_message(chat_id, text)
+
+
+def get_travel_days(start: str, end: str) -> int:
+    start_date = datetime.strptime(start, '%d.%m.%Y')
+    end_date = datetime.strptime(end, '%d.%m.%Y')
+    return (end_date - start_date).days + 1

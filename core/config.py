@@ -22,6 +22,10 @@ class Settings(BaseSettings):
     GEMINI_AI_MODEL: str = Field()
     AI_URL: str = Field()
 
+    DEEPSEEK_AI_MODEL: str = Field()
+
+    DEEPSEEK_AI_API_TOKEN: str = Field()
+
     #
     # EMAIL_HOST: str = Field('smtp.gmail.com')
     # EMAIL_PORT: int = Field(465)
@@ -42,4 +46,4 @@ class Settings(BaseSettings):
 settings = Settings()
 # print(settings.GEMINI_AI_API_KEY,settings.AI_MODEL,settings.TELEGRAM_BOT_TOKEN)
 
-# TODO .env.example
+#   TODO .env.example
