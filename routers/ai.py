@@ -125,3 +125,9 @@ async def handle_image(message: str):
         "Content-Disposition": "attachment; filename=generated.png"
     }
     return StreamingResponse(buf, media_type="image/png", headers=headers)
+
+    # TODO service ga otkazish
+
+    # TODO chatgpt dan 2hil tilda (uz, en) malumot qaytarish va db ga saqlash
+
+    # TODO chatgpt dan qaytgan textni image ai ga yuborib qaytgan imagelarni db ga saqlash
