@@ -1,6 +1,6 @@
 from datetime import datetime, UTC, timedelta
 from typing import Annotated
-
+import uuid
 from fastapi import HTTPException
 from fastapi.params import Depends
 from fastapi.security import HTTPBearer
@@ -27,6 +27,18 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     return encoded_jwt
 
 
+def create_refresh_token(data: dict, expires_delta: timedelta | None = None):
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.now(UTC) + expires_delta
+    else:
+        expire = datetime.now(UTC) + timedelta(minutes=settings.JWT_REFRESH_TOKEN_EXPIRE_TIME)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
+    return encoded_jwt
+
+
+
 def verify_password(plain_password: str, hashed_password) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 
@@ -36,18 +48,29 @@ def get_password_hash(password):
 
 
 
+
 async def get_current_user(token: Annotated[str, Depends(http_bearer)]):
     token = token.credentials
     try:
-        encoded_jwt = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=settings.JWT_ALGORITHM)
+        encoded_jwt = jwt.decode(
+            token,
+            settings.JWT_SECRET_KEY,
+            algorithms=[settings.JWT_ALGORITHM]
+        )
     except exceptions.JWTError as e:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))
 
-    user_id = encoded_jwt.get('sub')
+    user_id = encoded_jwt.get("sub")
+    if not user_id:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
 
-    if user_id.isdigit() and (user := await User.get(int(user_id))):
+    try:
+        user_uuid = uuid.UUID(user_id)
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid user ID format")
+
+    user = await User.get(user_uuid)
+    if user:
         return user
 
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")

@@ -74,16 +74,13 @@ class AIService:
                 print("No results for query:", query)
                 return None
 
-            # birinchi rasm URLini olish (regular size yoki small)
             image_url = results[0]["urls"]["regular"]
 
-            # rasmni yuklab olish
             img_resp = await client.get(image_url)
             if img_resp.status_code != 200:
                 print("Image download failed:", img_resp.status_code)
                 return None
 
-            # saqlash joyini tayyorlash
             save_dir = os.path.join("media", "tours")
             os.makedirs(save_dir, exist_ok=True)
             filename = f"tour_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg"
@@ -92,6 +89,5 @@ class AIService:
             async with aiofiles.open(file_path, "wb") as f:
                 await f.write(img_resp.content)
 
-            # URL sifatida qaytarish
             return f"/media/tours/{filename}"
 
