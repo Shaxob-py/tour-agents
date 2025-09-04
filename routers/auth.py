@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from fastapi.params import Depends
 from fastapi.responses import ORJSONResponse
 from starlette import status
@@ -6,7 +6,7 @@ from starlette import status
 from database import User
 from schemas.auth import LoginSchema
 from services.otp_services import OtpService
-from utils.security import create_access_token
+from utils.security import create_access_token, create_refresh_token
 from utils.utils import generate_code
 
 auth_router = APIRouter()
@@ -18,31 +18,47 @@ def otp_service():
 
 @auth_router.post('/auth')
 async def login_view(data: LoginSchema, service: OtpService = Depends(otp_service)):
-    code = generate_code()
-    telegram_id = await User.get_telegram_id_by_phone_number(data.phone)
-    service.send_otp_by_telegram(data.phone, telegram_id, code)
-    try:
+    user = await User.get_by_phone_number(data.phone)
+
+    if not user:
         return ORJSONResponse(
-            {'message': 'Check your email to verify your account'},
+            {"message": "Siz bot orqali ro'yxatdan o'tmagansiz. Iltimos, botdan ro'yxatdan o'ting."},
+            status_code=400
         )
-    except Exception as e:
-        return ORJSONResponse(
-            {'message': 'you should register your number with bot'})
+
+    code = generate_code()
+    telegram_id = user.telegram_id
+
+    service.send_otp_by_telegram(data.phone, telegram_id, code)
+
+    return ORJSONResponse(
+        {"message": "Tasdiqlash kodi telegram orqali yuborildi"}
+    )
 
 
 @auth_router.get('/verification-code')
 async def login_view(phone: str, code: str, service: OtpService = Depends(otp_service)):
     is_verified, user_data = service.verify_code_telegram(phone, code)
-    print(is_verified, user_data)
+
     if is_verified:
         user = await User.get_by_phone_number(phone)
 
-        # await User.create(**user_data)
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+
         token = create_access_token({"sub": str(user.id)})
-        return {"access_token": token}
+        refresh_token = create_refresh_token({"sub": str(user.id)})
+
+        return {
+            "access_token": token,
+            "refresh_token": refresh_token,
+        }
+
     return ORJSONResponse(
-        {'message': 'Invalid or expired code'},
+        {"message": "Invalid or expired code"},
         status.HTTP_400_BAD_REQUEST
     )
+
+
 
     # TODO refresh token qoshish kerak
