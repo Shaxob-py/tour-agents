@@ -2,7 +2,7 @@
 
 from sqlalchemy import String, select
 from sqlalchemy.dialects.mysql import BIGINT
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from database import Model
 from database.base_model import db
@@ -11,6 +11,8 @@ from database.base_model import db
 class User(Model):
     phone_number: Mapped[str] = mapped_column(String(25), nullable=True, unique=True)
     telegram_id : Mapped[int] = mapped_column(BIGINT, unique=True)
+    trips = relationship("Trip", back_populates="created_by")
+    trips_like = relationship("TripLike", back_populates="user")
 
     @classmethod
     async def get_by_phone_number(cls, phone_number: str):
