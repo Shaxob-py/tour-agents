@@ -39,11 +39,8 @@ class TripLike(Model):
     trip = relationship("Trip", back_populates="likes")
     user = relationship("User")
 
+    # ✅ DONE: created_at updated_at qo'shildi
+    # ✅ DONE: created_by relationship qo'shildi
+    # ✅ DONE: TripImage modeli yaratildi - ko'p rasm qo'shish mumkin
+    # ✅ DONE: TripLike modeli - faqat login qilgan userlar uchun
 
-# TODO created_at updated_at qoshish kk
-
-    # TODO created_by qoshish kk
-
-    # TODO nta rasmli bolishi kk
-
-    # TODO like va dislike qoshish kk faqat login qilgan user uchun

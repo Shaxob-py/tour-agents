@@ -27,11 +27,7 @@ class Settings(BaseSettings):
     DEEPSEEK_AI_API_TOKEN: str = Field()
 
     UNSPLASH_ACCESS_KEY : str = Field()
-    #
-    # EMAIL_HOST: str = Field('smtp.gmail.com')
-    # EMAIL_PORT: int = Field(465)
-    # EMAIL_USER: EmailStr = Field()
-    # EMAIL_PASSWORD: str = Field()
+
     @property
     def postgres_sync_url(self):
         return f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DATABASE}"
@@ -47,4 +43,3 @@ class Settings(BaseSettings):
 settings = Settings()
 # print(settings.GEMINI_AI_API_KEY,settings.AI_MODEL,settings.TELEGRAM_BOT_TOKEN)
 
-#   TODO .env.example
