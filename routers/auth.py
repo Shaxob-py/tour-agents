@@ -61,4 +61,4 @@ async def login_view(phone: str, code: str, service: OtpService = Depends(otp_se
 
 
 
-    # TODO refresh token qoshish kerak
+    # TODO refresh token orqali access_token olish

@@ -3,10 +3,12 @@ from datetime import datetime
 
 import aiofiles
 import httpx
+from starlette import status
 
 from core.config import settings
 
 UNSPLASH_ACCESS_KEY = settings.UNSPLASH_ACCESS_KEY
+
 
 class AIService:
 
@@ -34,7 +36,6 @@ class AIService:
         else:
             return text
 
-
     # async def handle_image(self, message: str):
     #     headers = {
     #         "Authorization": f"Bearer {settings.GEMINI_AI_API_KEY}",
@@ -57,7 +58,7 @@ class AIService:
     #         except:
     #             return None
 
-    async def handle_image_unsplash(self,query: str) -> str | None:
+    async def handle_image_unsplash(self, query: str) -> str | None:
         url = "https://api.unsplash.com/search/photos"
         params = {"query": query, "per_page": 1}  # faqat 1 ta rasm
         headers = {"Authorization": f"Client-ID {UNSPLASH_ACCESS_KEY}"}
@@ -89,5 +90,8 @@ class AIService:
             async with aiofiles.open(file_path, "wb") as f:
                 await f.write(img_resp.content)
 
-            return f"/media/tours/{filename}"
+            return f"/media/tours/{filename}"  # join bn
 
+
+def ai_service() -> AIService:
+    return AIService()

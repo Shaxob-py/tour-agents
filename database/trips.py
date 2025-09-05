@@ -16,14 +16,14 @@ class Trip(Model):
     is_ai_suggestion = mapped_column(Boolean, nullable=True)
     user_id = mapped_column(ForeignKey('users.id'), nullable=True)
     created_at = mapped_column(DateTime(timezone=True), server_default=func.now())
-    updated_at = mapped_column(DateTime(timezone=True), onupdate=func.now())
+    update_at = mapped_column(DateTime(timezone=True), onupdate=func.now())
     created_by = relationship("User", back_populates="trips")
     images = relationship("TripImage", back_populates="trip", cascade="all, delete-orphan")
     likes = relationship("TripLike", back_populates="trip", cascade="all, delete-orphan")
 
 
 class TripImage(Model):
-    trip_id = mapped_column(UUID(as_uuid=True), ForeignKey("trips.id"), nullable=False)
+    trip_id = mapped_column(UUID(as_uuid=True), ForeignKey("Trip.id"), nullable=False)
     url = mapped_column(String(255), nullable=False)
     description = mapped_column(String(255), nullable=False)
     created_at = mapped_column(DateTime(timezone=True), server_default=func.now())
@@ -39,4 +39,8 @@ class TripLike(Model):
     trip = relationship("Trip", back_populates="likes")
     user = relationship("User")
 
+    # ✅ DONE: created_at updated_at qo'shildi
+    # ✅ DONE: created_by relationship qo'shildi
+    # ✅ DONE: TripImage modeli yaratildi - ko'p rasm qo'shish mumkin
+    # ✅ DONE: TripLike modeli - faqat login qilgan userlar uchun
 
