@@ -6,7 +6,7 @@ from database import Model, Base
 
 
 class Trip(Model):
-    name = mapped_column(String(255),nullable=True)
+    name = mapped_column(String(255), nullable=True)
     description = mapped_column(String(500), nullable=True)
     country = mapped_column(String(255), nullable=True)
     city = mapped_column(String(255), nullable=True)
@@ -21,6 +21,8 @@ class Trip(Model):
     images = relationship("TripImage", back_populates="trip", cascade="all, delete-orphan")
     likes = relationship("TripLike", back_populates="trip", cascade="all, delete-orphan")
 
+    # TODO CreatedBaseModel
+
 
 class TripImage(Model):
     trip_id = mapped_column(UUID(as_uuid=True), ForeignKey("Trip.id"), nullable=False)
@@ -28,6 +30,9 @@ class TripImage(Model):
     description = mapped_column(String(255), nullable=False)
     created_at = mapped_column(DateTime(timezone=True), server_default=func.now())
     trip = relationship("Trip", back_populates="images")
+
+    # TODO relationshiplarni togrilab yozish
+    # TODO barcha model mapped qoshish kk
 
 
 class TripLike(Model):
@@ -43,4 +48,3 @@ class TripLike(Model):
     # ✅ DONE: created_by relationship qo'shildi
     # ✅ DONE: TripImage modeli yaratildi - ko'p rasm qo'shish mumkin
     # ✅ DONE: TripLike modeli - faqat login qilgan userlar uchun
-
