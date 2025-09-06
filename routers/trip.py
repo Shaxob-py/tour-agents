@@ -28,7 +28,6 @@ async def create_tour(
     days = get_travel_days(data.when, data.when_back)
     text_for_ai = (f'I want to go to {data.to} and I need you to show me the 5 best places and tell me the '
                    f'approximate cost for {days} days.')
-    # TODO const.py alohida ochilib osha yerga yozish kk
     return_text = await service.ai_text_generator(text_for_ai)
     image = await service.handle_image_unsplash(f'{data.to}')
     return ORJSONResponse({'messages': return_text,
