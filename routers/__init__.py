@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 from routers.auth import auth_router
-from routers.tour import tour_router
+from routers.trip import tour_router
 
 
 router = APIRouter()

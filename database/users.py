@@ -1,16 +1,19 @@
+from typing import Optional
+
 from sqlalchemy import String, select
 from sqlalchemy.dialects.mysql import BIGINT
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from database import Model
 from database.base_model import db
+from database.trips import TripLike
 
 
 class User(Model):
-    phone_number: Mapped[str] = mapped_column(String(25), nullable=True, unique=True)
-    telegram_id : Mapped[int] = mapped_column(BIGINT, unique=True)
-    trips = relationship("Trip", back_populates="created_by")
-    trips_like = relationship("TripLike", back_populates="user")
+    phone_number: Mapped[Optional[str]] = mapped_column(String(25), nullable=True, unique=True)
+    telegram_id : Mapped[Optional[int]] = mapped_column(BIGINT, unique=True)
+    trips: Mapped[list["Trip"]] = relationship("Trip", back_populates="created_by")
+    trips_like: Mapped[list["TripLike"]]= relationship("TripLike", back_populates="user")
 
     @classmethod
     async def get_by_phone_number(cls, phone_number: str):

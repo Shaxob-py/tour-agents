@@ -4,10 +4,10 @@ from fastapi.responses import ORJSONResponse
 from starlette import status
 
 from database import User
-from schemas.auth import LoginSchema
+from schemas.base_schema import LoginSchema
 from services.otp_services import OtpService
-from utils.security import create_access_token, create_refresh_token
-from utils.utils import generate_code
+from utils.security import create_access_token, create_refresh_token, verify_refresh_token
+from utils.utils import generate_code, verification_send_telegram
 
 auth_router = APIRouter()
 
@@ -59,6 +59,12 @@ async def login_view(phone: str, code: str, service: OtpService = Depends(otp_se
         status.HTTP_400_BAD_REQUEST
     )
 
+@auth_router.get('/refresh-token')
+async def refresh_token(refresh_token: str):
+    user_uuid = verify_refresh_token(refresh_token)
+    new_access_token = create_access_token({'sub': str(user_uuid)})
+    return {
+        "access_token": new_access_token,
+        "refresh_token": refresh_token,
+    }
 
-
-    # TODO refresh token orqali access_token olish

@@ -118,3 +118,7 @@ class CreatedModel(Model):
     __abstract__ = True
     updated_at: Mapped[datetime] = mapped_column(DateTime, server_onupdate=func.now())
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+
+
+async def get_session():
+    yield db._session
