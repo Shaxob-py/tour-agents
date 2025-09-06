@@ -94,7 +94,3 @@ async def like_statistics(
 
 
 
-    # TODO image larni saqlash kk
-    # TODO ai dan qaytgan text larni ham saqlash kk
-    # TODO /trip history qaytaradigan bolsin
-    # TODO like & dislike uchun api
