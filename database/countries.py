@@ -1,11 +1,13 @@
+from typing import Optional
+
 from sqlalchemy import String
-from sqlalchemy.orm import mapped_column
+from sqlalchemy.orm import mapped_column, Mapped
 
 from database import Model
 
 
 class Country(Model):
-    name = mapped_column(String(255), unique=True, nullable=True)
-    region = mapped_column(String(255), nullable=True)
-    description = mapped_column(String(255), nullable=True)
+    name: Mapped[Optional[str]] = mapped_column(String(255), unique=True, nullable=True)
+    region: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    description: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
 

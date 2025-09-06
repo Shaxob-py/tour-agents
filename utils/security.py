@@ -4,7 +4,7 @@ import uuid
 from fastapi import HTTPException
 from fastapi.params import Depends
 from fastapi.security import HTTPBearer
-from jose import jwt, exceptions
+from jose import jwt, exceptions, JWTError
 from passlib.context import CryptContext
 from starlette import status
 
@@ -22,7 +22,10 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
         expire = datetime.now(UTC) + expires_delta
     else:
         expire = datetime.now(UTC) + timedelta(minutes=settings.JWT_ACCESS_TOKEN_EXPIRE_TIME)
-    to_encode.update({"exp": expire})
+    to_encode.update({
+        "exp": expire,
+        "token_type": "access"
+    })
     encoded_jwt = jwt.encode(to_encode, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
     return encoded_jwt
 
@@ -33,9 +36,26 @@ def create_refresh_token(data: dict, expires_delta: timedelta | None = None):
         expire = datetime.now(UTC) + expires_delta
     else:
         expire = datetime.now(UTC) + timedelta(minutes=settings.JWT_REFRESH_TOKEN_EXPIRE_TIME)
-    to_encode.update({"exp": expire})
+    to_encode.update({
+        "exp": expire,
+        "token_type": "refresh"
+    })
     encoded_jwt = jwt.encode(to_encode, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
     return encoded_jwt
+
+def verify_refresh_token(token: str):
+    payload = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=[settings.JWT_ALGORITHM])
+    user_id: str = payload.get("sub")
+    token_type: str = payload.get("token_type")
+
+    if not user_id or token_type != "refresh":
+        raise HTTPException(status_code=401, detail="Invalid refresh token")
+
+    return uuid.UUID(user_id)
+
+
+
+
 
 
 
@@ -74,3 +94,4 @@ async def get_current_user(token: Annotated[str, Depends(http_bearer)]):
         return user
 
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+

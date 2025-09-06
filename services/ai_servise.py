@@ -30,7 +30,7 @@ class AIService:
         async with httpx.AsyncClient() as client:
             response = await client.post(settings.AI_URL, json=payload, headers=headers)
 
-        if response.status_code == 200:
+        if response.status_code == status.HTTP_200_OK:
             answer = response.json()['choices'][0]['message']['content']
             return answer
         else:
@@ -65,7 +65,7 @@ class AIService:
 
         async with httpx.AsyncClient(timeout=15.0, follow_redirects=True) as client:
             resp = await client.get(url, params=params, headers=headers)
-            if resp.status_code != 200:
+            if resp.status_code != status.HTTP_200_OK:
                 print("Unsplash API error:", resp.status_code, resp.text)
                 return None
 
@@ -78,7 +78,7 @@ class AIService:
             image_url = results[0]["urls"]["regular"]
 
             img_resp = await client.get(image_url)
-            if img_resp.status_code != 200:
+            if img_resp.status_code != status.HTTP_200_OK:
                 print("Image download failed:", img_resp.status_code)
                 return None
 
@@ -90,7 +90,7 @@ class AIService:
             async with aiofiles.open(file_path, "wb") as f:
                 await f.write(img_resp.content)
 
-            return f"/media/tours/{filename}"  # join bn
+            return os.path.join("/media/tours", filename)
 
 
 def ai_service() -> AIService:
