@@ -36,28 +36,6 @@ class AIService:
         else:
             return text
 
-    # async def handle_image(self, message: str):
-    #     headers = {
-    #         "Authorization": f"Bearer {settings.GEMINI_AI_API_KEY}",
-    #         "Content-Type": "application/json"
-    #     }
-    #     payload = {
-    #         "prompt": message,
-    #         "model": settings.GEMINI_AI_MODEL,
-    #         "size": "512x512",
-    #         "n": 1
-    #     }
-    #
-    #     async with httpx.AsyncClient() as client:
-    #         response = await client.post(settings.AI_URL, json=payload, headers=headers)
-    #
-    #         try:
-    #             data = response.json()
-    #             image_url = data.get("choices", [{}])[0].get('images')[0].get('image_url').get('url')
-    #             return image_url
-    #         except:
-    #             return None
-
     async def handle_image_unsplash(self, query: str) -> str | None:
         url = "https://api.unsplash.com/search/photos"
         params = {"query": query, "per_page": 1}  # faqat 1 ta rasm
