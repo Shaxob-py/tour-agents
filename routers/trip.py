@@ -7,6 +7,7 @@ from fastapi.responses import ORJSONResponse
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from const import TOUR_PROMPT
 from database import Trip
 from database.base_model import get_session
 from database.trips import TripLike
@@ -26,8 +27,7 @@ async def create_tour(
         current_user=Depends(get_current_user),
 ):
     days = get_travel_days(data.when, data.when_back)
-    text_for_ai = (f'I want to go to {data.to} and I need you to show me the 5 best places and tell me the '
-                   f'approximate cost for {days} days.')
+    text_for_ai = TOUR_PROMPT.format(destination=data.to, days=days)
     return_text = await service.ai_text_generator(text_for_ai)
     image = await service.handle_image_unsplash(f'{data.to}')
     return ORJSONResponse({'messages': return_text,
@@ -88,6 +88,39 @@ async def like_statistics(
         "dislikes": stats[False],
     }
 
+
+
+@tour_router.get("/history")
+async def get_trip_history(
+    session: AsyncSession = Depends(get_session),
+    user=Depends(get_current_user),
+):
+    result = await session.execute(
+        select(Trip)
+        .where(Trip.user_id == user.id)
+        .order_by(Trip.created_at.desc())
+    )
+    trips = result.scalars().all()
+
+    if not trips:
+        raise HTTPException(status_code=404, detail="No trips found in history")
+
+    return [
+        {
+            "id": str(trip.id),
+            "name": trip.name,
+            "description": trip.description,
+            "country": trip.country,
+            "city": trip.city,
+            "start_date": trip.start_date,
+            "end_date": trip.end_date,
+            "price": trip.price,
+            "likes": trip.likes_count,
+            "dislikes": trip.dislikes_count,
+            "created_at": trip.created_at,
+        }
+        for trip in trips
+    ]
 
 
 
