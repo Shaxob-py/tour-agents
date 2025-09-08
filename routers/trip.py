@@ -43,8 +43,7 @@ async def create_tour(
         is_ai_suggestion=True
     )
 
-    if image:
-        trip_image = TripImage.create(
+    await TripImage.create(
             trip_id=trip.id,
             url=image,
         )
