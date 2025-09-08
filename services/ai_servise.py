@@ -21,10 +21,14 @@ class AIService:
             "model": settings.DEEPSEEK_AI_MODEL,
             "messages": [
                 {"role": "system",
-                 "content": "You are a helpful AI tour agent and you should speak in Uzbek language."},
+                 "content": "You are a helpful AI tour agent and you should speak in Uzbek language and your word  should not 250 example "
+                            "1: Samarkand "
+                            "2: Buxara "
+                            "price 200 $ that is all"},
+
                 {"role": "user", "content": text}
             ],
-            "max_tokens": 100,
+            "max_tokens": 500,
 
         }
         async with httpx.AsyncClient() as client:

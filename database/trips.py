@@ -9,13 +9,11 @@ from database import Model
 
 
 class Trip(Model):
-    name: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
-    description: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
-    country: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
-    city: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    away_from: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    destination :Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    description: Mapped[Optional[str]] = mapped_column(String(2000), nullable=True)
     start_date: Mapped[Optional[Date]] = mapped_column(Date, nullable=True)
     end_date: Mapped[Optional[Date]] = mapped_column(Date, nullable=True)
-    price: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
     is_ai_suggestion: Mapped[Optional[bool]] = mapped_column(Boolean, nullable=True)
     user_id: Mapped[Optional[UUID]] = mapped_column(ForeignKey("users.id"), nullable=True)
     created_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), server_default=func.now())
@@ -31,7 +29,6 @@ class Trip(Model):
 class TripImage(Model):
     trip_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("trips.id"), nullable=False)
     url: Mapped[str] = mapped_column(String(255), nullable=False)
-    description: Mapped[Optional[str]] = mapped_column(String(255), nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     trip: Mapped["Trip"] = relationship("Trip", back_populates="images")

@@ -1,4 +1,5 @@
 import uuid
+from datetime import datetime
 from http.client import HTTPException
 
 from fastapi import APIRouter
@@ -10,7 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from const import TOUR_PROMPT
 from database import Trip
 from database.base_model import get_session
-from database.trips import TripLike
+from database.trips import TripLike, TripImage
 # from routers.ai import handle_image
 from schemas.base_schema import TourSchema
 from services.ai_servise import AIService, ai_service
@@ -30,16 +31,35 @@ async def create_tour(
     text_for_ai = TOUR_PROMPT.format(destination=data.to, days=days)
     return_text = await service.ai_text_generator(text_for_ai)
     image = await service.handle_image_unsplash(f'{data.to}')
-    return ORJSONResponse({'messages': return_text,
-                           'image': image})
+    start_date = datetime.strptime(data.when, "%d.%m.%Y").date()
+    end_date = datetime.strptime(data.when_back, "%d.%m.%Y").date()
+    trip = await Trip.create(
+        away_from=data.where,
+        description=return_text,
+        destination=data.to,
+        start_date=start_date,
+        end_date=end_date,
+        user_id=current_user.id,
+        is_ai_suggestion=True
+    )
 
+    if image:
+        trip_image = TripImage.create(
+            trip_id=trip.id,
+            url=image,
+        )
+
+    return ORJSONResponse({
+        'messages': return_text,
+        'image': image
+    })
 
 @tour_router.post("/{trip_id}/like")
 async def like_dislike_trip(
-    trip_id: uuid.UUID,
-    is_like: bool,
-    session: AsyncSession = Depends(get_session),
-    user=Depends(get_current_user),
+        trip_id: uuid.UUID,
+        is_like: bool,
+        session: AsyncSession = Depends(get_session),
+        user=Depends(get_current_user),
 ):
     result = await session.execute(select(Trip).where(Trip.id == trip_id))
     trip = result.scalar_one_or_none()
@@ -80,7 +100,7 @@ async def like_statistics(
     )
     stats = {True: 0, False: 0}
     for is_like, count in result.all():
-        stats[is_like] =  count
+        stats[is_like] = count
 
     return {
         "trip_id": str(trip_id),
@@ -89,11 +109,10 @@ async def like_statistics(
     }
 
 
-
 @tour_router.get("/history")
 async def get_trip_history(
-    session: AsyncSession = Depends(get_session),
-    user=Depends(get_current_user),
+        session: AsyncSession = Depends(get_session),
+        user=Depends(get_current_user),
 ):
     result = await session.execute(
         select(Trip)
@@ -121,8 +140,3 @@ async def get_trip_history(
         }
         for trip in trips
     ]
-
-
-
-
-

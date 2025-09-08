@@ -7,13 +7,16 @@ from starlette import status
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
+from database.base_model import db
 from routers import router
 
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
+    await db.create_all()
     print('project ishga tushdi')
     yield
+    # await db.drop_all()
     print('project toxtadi')
 
 
