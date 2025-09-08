@@ -23,7 +23,7 @@ async def handle_contact(message: Message, state: FSMContext) -> None:
     contact = message.contact
     data = await state.get_data()
     register = data.get('register')
-    if register is None:
+    if register:
         if contact.user_id != message.from_user.id:
             await message.answer("❌ Faqat o'zingizning telefon raqamingizni yuboring!")
             return
@@ -34,7 +34,6 @@ async def handle_contact(message: Message, state: FSMContext) -> None:
         await User.create(**data)
         await state.update_data(register=True)
         await message.answer("✅ Royxattan muvaffaqiyatli o'tdingiz!")
-
     else:
         await message.answer('Siz allaqachon registerdan otgansiz')
 
