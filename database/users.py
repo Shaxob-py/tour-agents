@@ -10,6 +10,7 @@ from database.trips import TripLike
 
 
 class User(Model):
+    username: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     phone_number: Mapped[Optional[str]] = mapped_column(String(25), nullable=True, unique=True)
     telegram_id : Mapped[Optional[int]] = mapped_column(BIGINT, unique=True)
     trips: Mapped[list["Trip"]] = relationship("Trip", back_populates="created_by")

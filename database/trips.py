@@ -1,11 +1,14 @@
 import datetime
 from typing import Optional
 
-from sqlalchemy import String, Date, Float, Boolean, ForeignKey, DateTime, func, Integer
+from sqlalchemy import String, Date, Boolean, ForeignKey, DateTime, func, Integer
+from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import mapped_column, relationship, Mapped
+from sqlalchemy.orm import selectinload
 
 from database import Model
+from database.base_model import db
 
 
 class Trip(Model):
@@ -25,6 +28,15 @@ class Trip(Model):
     likes_count: Mapped[int] = mapped_column(Integer, default=0)
     dislikes_count: Mapped[int] = mapped_column(Integer, default=0)
 
+    @classmethod
+    async def get_all(cls):
+        result = await db.execute(
+            select(cls).options(
+                selectinload(cls.created_by),
+                selectinload(cls.images),
+            )
+        )
+        return result.scalars().all()
 
 class TripImage(Model):
     trip_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("trips.id"), nullable=False)

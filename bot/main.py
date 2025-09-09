@@ -28,6 +28,7 @@ async def handle_contact(message: Message, state: FSMContext) -> None:
             await message.answer("❌ Faqat o'zingizning telefon raqamingizni yuboring!")
             return
         data = {
+            'username' : contact.username,
             'phone_number': contact.phone_number,
             'telegram_id': message.from_user.id,
         }

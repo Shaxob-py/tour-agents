@@ -13,7 +13,7 @@ from database import Trip
 from database.base_model import get_session
 from database.trips import TripLike, TripImage
 # from routers.ai import handle_image
-from schemas.base_schema import TourSchema
+from schemas.base_schema import TourSchema, ResponseSchema, ReadTourSchema
 from services.ai_servise import AIService, ai_service
 from utils.security import get_current_user
 from utils.utils import get_travel_days
@@ -139,3 +139,17 @@ async def get_trip_history(
         }
         for trip in trips
     ]
+@tour_router.get("/tours")
+async def get_tour():
+    tours = await Trip.get_all()
+    return ResponseSchema[list[ReadTourSchema]](
+        message='All Tours',
+        data=tours,
+    )
+# @category_router.get('/category')
+# async def get_categories():
+#     categories = await Category.get_all()
+#     return ResponseSchema[list[ReadCategory]](
+#         message='all categox  ries',
+#         data=categories
+#     )
