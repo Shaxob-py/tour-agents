@@ -146,10 +146,3 @@ async def get_tour():
         message='All Tours',
         data=tours,
     )
-# @category_router.get('/category')
-# async def get_categories():
-#     categories = await Category.get_all()
-#     return ResponseSchema[list[ReadCategory]](
-#         message='all categox  ries',
-#         data=categories
-#     )
