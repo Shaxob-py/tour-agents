@@ -12,8 +12,10 @@ def send_telegram_message(chat_id: int, text: str):
     response = httpx.post(url, data=payload)
     return response.json()
 
+
 def generate_code() -> int:
     return randint(100000, 999999)
+
 
 def verification_send_telegram(chat_id: int, code: int):
     text = f"🔑 Your verification code is: {code}"
