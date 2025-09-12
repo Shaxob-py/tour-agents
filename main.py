@@ -19,6 +19,7 @@ async def lifespan(_app: FastAPI):
     # await db.drop_all()
     print('project toxtadi')
 
+# TODO api/v1/
 
 app = FastAPI(
     docs_url='/',

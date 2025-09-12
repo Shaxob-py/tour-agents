@@ -60,7 +60,7 @@ async def login_view(phone: str, code: str, service: OtpService = Depends(otp_se
     )
 
 
-@auth_router.get('/refresh-token')
+@auth_router.get('/refresh-token') # TODO post orqali ishlasin
 async def refresh_token(refresh_token: str):
     user_uuid = verify_refresh_token(refresh_token)
     new_access_token = create_access_token({'sub': str(user_uuid)})

@@ -20,7 +20,6 @@ from utils.utils import get_travel_days
 
 tour_router = APIRouter(tags=["tour"])
 
-
 @tour_router.post("/trip")
 async def create_tour(
         data: TourSchema,
@@ -138,6 +137,13 @@ async def get_trip_history(
         }
         for trip in trips
     ]
+
+# TODO api/v1/trips (id,away_from,destination,image,days,view_count,likes_count,dislikes_count)
+# TODO api/v1/favorite (men like bosgan triplardagi ..dan ..gacha bolganlarini inobat olib chiqarish)
+
+# uz -> kr
+# kz -> kr
+# kgz -> kr
 
 
 @tour_router.get("/tours")

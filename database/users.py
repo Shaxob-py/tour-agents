@@ -15,6 +15,7 @@ class User(Model):
     telegram_id : Mapped[Optional[int]] = mapped_column(BIGINT, unique=True)
     trips: Mapped[list["Trip"]] = relationship("Trip", back_populates="created_by")
     trips_like: Mapped[list["TripLike"]]= relationship("TripLike", back_populates="user")
+    # TODO login uchun unique key topish
 
     @classmethod
     async def get_by_phone_number(cls, phone_number: str):

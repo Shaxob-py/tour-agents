@@ -66,7 +66,7 @@ class AIService:
 
             save_dir = os.path.join("media", "tours")
             os.makedirs(save_dir, exist_ok=True)
-            filename = f"tour_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg"
+            filename = f"tour_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg" # media/tours/2025/09/15/image.png
             file_path = os.path.join(save_dir, filename)
 
             async with aiofiles.open(file_path, "wb") as f:
