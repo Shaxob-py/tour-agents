@@ -7,7 +7,7 @@ from database import User
 from schemas.base_schema import LoginSchema
 from services.otp_services import OtpService
 from utils.security import create_access_token, create_refresh_token, verify_refresh_token
-from utils.utils import generate_code, verification_send_telegram
+from utils.utils import generate_code
 
 auth_router = APIRouter()
 
@@ -59,6 +59,7 @@ async def login_view(phone: str, code: str, service: OtpService = Depends(otp_se
         status.HTTP_400_BAD_REQUEST
     )
 
+
 @auth_router.get('/refresh-token')
 async def refresh_token(refresh_token: str):
     user_uuid = verify_refresh_token(refresh_token)
@@ -67,4 +68,3 @@ async def refresh_token(refresh_token: str):
         "access_token": new_access_token,
         "refresh_token": refresh_token,
     }
-

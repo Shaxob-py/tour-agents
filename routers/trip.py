@@ -44,14 +44,13 @@ async def create_tour(
     )
 
     await TripImage.create(
-            trip_id=trip.id,
-            url=image,
-        )
-
+        trip_id=trip.id,
+        url=image,
+    )
     return ORJSONResponse({
         'messages': return_text,
-        'image': image
-    })
+        'image': image})
+
 
 @tour_router.post("/{trip_id}/like")
 async def like_dislike_trip(
@@ -139,6 +138,8 @@ async def get_trip_history(
         }
         for trip in trips
     ]
+
+
 @tour_router.get("/tours")
 async def get_tour():
     tours = await Trip.get_all()
