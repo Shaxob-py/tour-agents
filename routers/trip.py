@@ -12,7 +12,6 @@ from const import TOUR_PROMPT
 from database import Trip
 from database.base_model import get_session
 from database.trips import TripLike, TripImage
-# from routers.ai import handle_image
 from schemas.base_schema import TourSchema, ResponseSchema, ReadTourSchema
 from services.ai_servise import AIService, ai_service
 from utils.security import get_current_user

@@ -3,6 +3,7 @@ import {Footer} from "@/components/footer"
 import {Card, CardContent} from "@/components/ui/card"
 import {Badge} from "@/components/ui/badge"
 import {Award, Globe, Heart, Users} from "lucide-react"
+import { useEffect, useState } from "react"
 
 const stats = [
   { icon: Users, label: "Happy Travelers", value: "50,000+" },
@@ -22,7 +23,7 @@ const team = [
     name: "David Chen",
     role: "Head of Operations",
     image: "/professional-man-operations-manager-travel.png",
-    bio: "David ensures every trips runs smoothly with his expertise in logistics and customer service excellence.",
+    bio: "David ensures every trip runs smoothly with his expertise in logistics and customer service excellence.",
   },
   {
     name: "Maria Rodriguez",
@@ -32,7 +33,34 @@ const team = [
   },
 ]
 
+const API_URL = "http://localhost:8000/api/v1";
+
 export default function AboutPage() {
+  const [tours, setTours] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    async function getTours() {
+      try {
+        setLoading(true);
+        const res = await fetch(`${API_URL}/tours`);
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        const data = await res.json();
+        console.log(data);
+        setTours(data);
+      } catch (error) {
+        console.error('Failed to fetch tours:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    // Only fetch tours if you actually need them for this component
+    // getTours();
+  }, []);
+
   return (
     <main className="min-h-screen">
       <Navigation />
@@ -40,7 +68,9 @@ export default function AboutPage() {
       {/* Hero Section */}
       <section className="relative py-32 bg-gradient-to-r from-primary to-primary/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-5xl md:text-6xl font-bold text-primary-foreground mb-6 text-balance">About WanderLux</h1>
+          <h1 className="text-5xl md:text-6xl font-bold text-primary-foreground mb-6 text-balance">
+            About WanderLux
+          </h1>
           <p className="text-xl text-primary-foreground/90 max-w-2xl mx-auto text-pretty">
             Crafting extraordinary travel experiences and creating memories that last a lifetime since 2010.
           </p>
@@ -67,7 +97,14 @@ export default function AboutPage() {
               </p>
             </div>
             <div className="relative">
-              <img src="/travel-agency-office-team-planning-world-map.png" alt="WanderLux team planning" className="rounded-lg shadow-xl" />
+              <img
+                src="/travel-agency-office-team-planning-world-map.png"
+                alt="WanderLux team planning"
+                className="rounded-lg shadow-xl"
+                onError={(e) => {
+                  e.target.src = "/placeholder.svg";
+                }}
+              />
             </div>
           </div>
         </div>
@@ -116,9 +153,12 @@ export default function AboutPage() {
               >
                 <CardContent className="p-8">
                   <img
-                    src={member.image || "/placeholder.svg"}
+                    src={member.image}
                     alt={member.name}
                     className="w-32 h-32 rounded-full mx-auto mb-6 object-cover"
+                    onError={(e) => {
+                      e.target.src = "/placeholder.svg";
+                    }}
                   />
                   <h3 className="text-xl font-bold text-foreground mb-2">{member.name}</h3>
                   <Badge variant="secondary" className="mb-4">

@@ -9,14 +9,14 @@ from services.otp_services import OtpService
 from utils.security import create_access_token, create_refresh_token, verify_refresh_token
 from utils.utils import generate_code
 
-auth_router = APIRouter()
+auth_router = APIRouter(tags=["auth"])
 
 
 def otp_service():
     return OtpService()
 
 
-@auth_router.post('/auth')
+@auth_router.post('/login')
 async def login_view(data: LoginSchema, service: OtpService = Depends(otp_service)):
     user = await User.get_by_phone_number(data.phone)
 
@@ -60,7 +60,7 @@ async def login_view(phone: str, code: str, service: OtpService = Depends(otp_se
     )
 
 
-@auth_router.get('/refresh-token') # TODO post orqali ishlasin
+@auth_router.post('/refresh-token') # TODO post orqali ishlasin
 async def refresh_token(refresh_token: str):
     user_uuid = verify_refresh_token(refresh_token)
     new_access_token = create_access_token({'sub': str(user_uuid)})

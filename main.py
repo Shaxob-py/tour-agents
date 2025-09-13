@@ -23,7 +23,7 @@ async def lifespan(_app: FastAPI):
 
 app = FastAPI(
     docs_url='/',
-    root_path='/api',
+    root_path='/api/v1',
     title="Tour Agency API",
     description="JWT Authentication bilan himoyalangan API",
     lifespan=lifespan,
