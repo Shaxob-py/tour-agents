@@ -5,17 +5,18 @@ from sqlalchemy.dialects.mysql import BIGINT
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from database import Model
-from database.base_model import db
+from database.base_model import db, CreatedModel
 from database.trips import TripLike
 
 
-class User(Model):
+class User(CreatedModel, Model):
     username: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
-    phone_number: Mapped[Optional[str]] = mapped_column(String(25), nullable=True, unique=True)
-    telegram_id : Mapped[Optional[int]] = mapped_column(BIGINT, unique=True)
+    phone_number: Mapped[Optional[str]] = mapped_column(String(25), unique=True)
+    telegram_id: Mapped[Optional[int]] = mapped_column(BIGINT, unique=True)
     trips: Mapped[list["Trip"]] = relationship("Trip", back_populates="created_by")
-    trips_like: Mapped[list["TripLike"]]= relationship("TripLike", back_populates="user")
-    # TODO login uchun unique key topish
+    trips_like: Mapped[list["TripLike"]] = relationship("TripLike", back_populates="user")
+
+
 
     @classmethod
     async def get_by_phone_number(cls, phone_number: str):

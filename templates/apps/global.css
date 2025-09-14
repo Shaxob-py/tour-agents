@@ -4,7 +4,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Updated color tokens to match tour agency design brief */
+
   --background: oklch(1 0 0); /* #ffffff */
   --foreground: oklch(0.205 0 0); /* #1f2937 */
   --card: oklch(0.985 0 0); /* #f8fafc */

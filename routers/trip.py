@@ -1,4 +1,4 @@
-import uuid
+from uuid import UUID
 from datetime import datetime
 from http.client import HTTPException
 
@@ -7,6 +7,7 @@ from fastapi.params import Depends
 from fastapi.responses import ORJSONResponse
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
+from starlette import status
 
 from const import TOUR_PROMPT
 from database import Trip
@@ -17,9 +18,9 @@ from services.ai_servise import AIService, ai_service
 from utils.security import get_current_user
 from utils.utils import get_travel_days
 
-tour_router = APIRouter(tags=["tour"])
+trip_agents = APIRouter(tags=["tour"])
 
-@tour_router.post("/trip")
+@trip_agents.post("/trip")
 async def create_tour(
         data: TourSchema,
         service: AIService = Depends(ai_service),
@@ -50,9 +51,9 @@ async def create_tour(
         'image': image})
 
 
-@tour_router.post("/{trip_id}/like")
+@trip_agents.post("/{trip_id}/like")
 async def like_dislike_trip(
-        trip_id: uuid.UUID,
+        trip_id: UUID,
         is_like: bool,
         session: AsyncSession = Depends(get_session),
         user=Depends(get_current_user),
@@ -84,9 +85,9 @@ async def like_dislike_trip(
     return {"message": "Success", "trip_id": str(trip_id), "is_like": is_like}
 
 
-@tour_router.get("/{trip_id}/like_statistics")
+@trip_agents.get("/{trip_id}/like_statistics")
 async def like_statistics(
-        trip_id: uuid.UUID,
+        trip_id: UUID,
         session: AsyncSession = Depends(get_session),
 ):
     result = await session.execute(
@@ -104,51 +105,26 @@ async def like_statistics(
         "dislikes": stats[False],
     }
 
-
-@tour_router.get("/history")
-async def get_trip_history(
-        session: AsyncSession = Depends(get_session),
-        user=Depends(get_current_user),
-):
-    result = await session.execute(
-        select(Trip)
-        .where(Trip.user_id == user.id)
-        .order_by(Trip.created_at.desc())
-    )
-    trips = result.scalars().all()
-
-    if not trips:
-        raise HTTPException(status_code=404, detail="No trips found in history")
-
-    return [
-        {
-            "id": str(trip.id),
-            "name": trip.name,
-            "description": trip.description,
-            "country": trip.country,
-            "city": trip.city,
-            "start_date": trip.start_date,
-            "end_date": trip.end_date,
-            "price": trip.price,
-            "likes": trip.likes_count,
-            "dislikes": trip.dislikes_count,
-            "created_at": trip.created_at,
-        }
-        for trip in trips
-    ]
-
-# TODO api/v1/trips (id,away_from,destination,image,days,view_count,likes_count,dislikes_count)
-# TODO api/v1/favorite (men like bosgan triplardagi ..dan ..gacha bolganlarini inobat olib chiqarish)
-
-# uz -> kr
-# kz -> kr
-# kgz -> kr
-
-
-@tour_router.get("/tours")
+@trip_agents.get("/trip")
 async def get_tour():
     tours = await Trip.get_all()
     return ResponseSchema[list[ReadTourSchema]](
         message='All Tours',
         data=tours,
+    )
+
+@trip_agents.get("/trip{id}")
+async def get_tour_id(id: UUID):
+    trip = await Trip.get(id)
+    if trip is None:
+        return ORJSONResponse(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content={'message': 'trip not found', 'data': None}
+        )
+    await Trip.update_view_count(id)
+
+
+    return ResponseSchema[ReadTourSchema](
+        message='Trip detail',
+        data=trip
     )

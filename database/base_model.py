@@ -116,7 +116,7 @@ class Model(Base, AbstractClass):
 
 class CreatedModel(Model):
     __abstract__ = True
-    updated_at: Mapped[datetime] = mapped_column(DateTime, server_onupdate=func.now())
+    updated_at: Mapped[datetime] = mapped_column(DateTime, server_onupdate=func.now() , nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
 
 

@@ -46,6 +46,7 @@ class ReadTourSchema(BaseModel):
     description: str
     start_date: date
     end_date: date
+    view_count: int
     created_at: datetime | None = None
     update_at: datetime | None = None
     created_by: UserSchema
