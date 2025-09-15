@@ -23,20 +23,18 @@ async def login_view(data: LoginSchema, service: OtpService = Depends(otp_servic
     if not user:
         return ORJSONResponse(
             {"message": "Siz bot orqali ro'yxatdan o'tmagansiz. Iltimos, botdan ro'yxatdan o'ting."},
-            status_code=401
+            status_code=status.HTTP_401_UNAUTHORIZED
         )
 
     code = generate_code()
-    telegram_id = user.telegram_id
-
-    service.send_otp_by_telegram(data.phone, telegram_id, code)
+    service.send_otp_by_telegram(user, code)
 
     return ORJSONResponse(
         {"message": "Tasdiqlash kodi telegram orqali yuborildi"}
     )
 
 
-@auth_router.get('/verification-code')
+@auth_router.post('/token')
 async def login_view(phone: str, code: str, service: OtpService = Depends(otp_service)):
     is_verified, user_data = service.verify_code_telegram(phone, code)
 

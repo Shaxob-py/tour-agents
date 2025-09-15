@@ -51,7 +51,7 @@ async def create_tour(
         'image': image})
 
 
-@trip_agents.post("/{trip_id}/like")
+@trip_agents.post("/{trip_id}/like") # TODO qarab chiqish kk
 async def like_dislike_trip(
         trip_id: UUID,
         is_like: bool,
@@ -113,7 +113,7 @@ async def get_tour():
         data=tours,
     )
 
-@trip_agents.get("/trip{id}")
+@trip_agents.get("/trip/{id}")
 async def get_tour_id(id: UUID):
     trip = await Trip.get(id)
     if trip is None:

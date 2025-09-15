@@ -26,7 +26,7 @@ class Trip(CreatedModel, Model):
 
     images: Mapped[list["TripImage"]] = relationship("TripImage", back_populates="trip", cascade="all, delete-orphan")
     likes: Mapped[list["TripLike"]] = relationship("TripLike", back_populates="trip", cascade="all, delete-orphan")
-    likes_count: Mapped[int] = mapped_column(Integer, default=0)
+    likes_count: Mapped[int] = mapped_column(Integer, server_default='0')
     dislikes_count: Mapped[int] = mapped_column(Integer, default=0)
 
     @classmethod
@@ -52,7 +52,6 @@ class Trip(CreatedModel, Model):
         return (await db.execute(query)).scalar_one_or_none()
 
     @classmethod
-
     async def update_view_count(cls, id_):
         query = (
             update(cls)
@@ -62,11 +61,9 @@ class Trip(CreatedModel, Model):
         await db.commit()
 
 
-
-
 class TripImage(Model):
     trip_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("trips.id"))
-    url: Mapped[str] = mapped_column(String(255), nullable=False)
+    url: Mapped[str] = mapped_column(String(255), nullable=False)  # TODO nullable=False kerak emas
 
     trip: Mapped["Trip"] = relationship("Trip", back_populates="images")
 
@@ -76,6 +73,6 @@ class TripLike(Model):
     trip: Mapped["Trip"] = relationship("Trip", back_populates="likes")
 
     user_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
-    is_like: Mapped[bool] = mapped_column(Boolean, nullable=False)
+    is_like: Mapped[bool] = mapped_column(Boolean, nullable=True)
 
     user: Mapped["User"] = relationship("User")

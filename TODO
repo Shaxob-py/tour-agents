@@ -1,10 +1,10 @@
-1. barcha id -> UUID bolsin
+1. barcha id -> UUID bolsin  ✅
 
-2. modellardagi id lar djangodagidek bolsin
+2. modellardagi id lar djangodagidek bolsin ✅
 
 3. requests larni toliq async da yozish
 
-4. alembic ulash
+4. alembic ulash ✅
 
 5. bot orqali kirish (botga nomer yuboriladi,
 botdan qaytgan kodni apiga yuborish kerak)
@@ -13,3 +13,12 @@ jwt qaytaradi
 
 6. rasm generate qiladigan AI topish
 (joy nomini bersa rasmini chizish kerak)
+
+
+
+
+task
+1. phone number regex orqali olinsin (+998 90 100-10-10 -> 901001010)
+2. trips apida filter, search, pagination
+3. har bir apiga response schema yozish
+4. country_script.py yozish (db ga countries ni qoshib beradigan)

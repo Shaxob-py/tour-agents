@@ -110,13 +110,13 @@ class Model(Base, AbstractClass):
         UUID(as_uuid=True),
         primary_key=True,
         server_default=text("gen_random_uuid()")
-)
+    )
     __abstract__ = True
 
 
 class CreatedModel(Model):
     __abstract__ = True
-    updated_at: Mapped[datetime] = mapped_column(DateTime, server_onupdate=func.now() , nullable=True)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, server_onupdate=func.now(), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
 
 
