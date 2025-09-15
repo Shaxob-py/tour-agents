@@ -20,6 +20,7 @@ from utils.utils import get_travel_days
 
 trip_agents = APIRouter(tags=["tour"])
 
+
 @trip_agents.post("/trip")
 async def create_tour(
         data: TripSchema,
@@ -51,15 +52,15 @@ async def create_tour(
         'image': image})
 
 
-@trip_agents.post("/{trip_id}/like") # TODO qarab chiqish kk
+@trip_agents.post("/{trip_id}/like")
 async def like_dislike_trip(
         trip_id: UUID,
         is_like: bool,
         session: AsyncSession = Depends(get_session),
         user=Depends(get_current_user),
 ):
-    result = await session.execute(select(Trip).where(Trip.id == trip_id))
-    trip = result.scalar_one_or_none()
+
+    trip =  Trip.get(trip_id)
     if not trip:
         raise HTTPException(status_code=404, detail="Trip not found")
 
@@ -105,15 +106,18 @@ async def like_statistics(
         "dislikes": stats[False],
     }
 
-@trip_agents.get("/trip")
+
+@trip_agents.get("/trip",response_model=ResponseSchema)
 async def get_tour():
+
     tours = await Trip.get_all()
     return ResponseSchema[list[ReadTripSchema]](
         message='All Tours',
         data=tours,
     )
 
-@trip_agents.get("/trip/{id}")
+
+@trip_agents.get("/trip{id}",response_model=ReadTripSchema)
 async def get_tour_id(id: UUID):
     trip = await Trip.get(id)
     if trip is None:
@@ -122,7 +126,6 @@ async def get_tour_id(id: UUID):
             content={'message': 'trip not found', 'data': None}
         )
     await Trip.update_view_count(id)
-
 
     return ResponseSchema[ReadTripSchema](
         message='Trip detail',

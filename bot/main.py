@@ -27,7 +27,7 @@ async def handle_contact(message: Message, state: FSMContext) -> None:
     contact = message.contact
     data = await state.get_data()
     register = data.get('register')
-    if register:
+    if register is None:
         if contact.user_id != message.from_user.id:
             await message.answer("❌ Faqat o'zingizning telefon raqamingizni yuboring!")
             return

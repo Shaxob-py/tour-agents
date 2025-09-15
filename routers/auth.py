@@ -4,7 +4,7 @@ from fastapi.responses import ORJSONResponse
 from starlette import status
 
 from database import User
-from schemas.base_schema import LoginSchema
+from schemas.base_schema import LoginSchema, ResponseSchema
 from services.otp_services import OtpService
 from utils.security import create_access_token, create_refresh_token, verify_refresh_token
 from utils.utils import generate_code

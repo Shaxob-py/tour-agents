@@ -7,6 +7,7 @@ from starlette import status
 
 from core.config import settings
 
+UNSPLASH_ACCESS_KEY = settings.UNSPLASH_ACCESS_KEY
 
 
 class AIService:
@@ -42,7 +43,7 @@ class AIService:
     async def handle_image_unsplash(self, query: str) -> str | None:
         url = "https://api.unsplash.com/search/photos"
         params = {"query": query, "per_page": 1}  # faqat 1 ta rasm
-        headers = {"Authorization": f"Client-ID {settings.UNSPLASH_ACCESS_KEY}"}
+        headers = {"Authorization": f"Client-ID {UNSPLASH_ACCESS_KEY}"}
 
         async with httpx.AsyncClient(timeout=15.0, follow_redirects=True) as client:
             resp = await client.get(url, params=params, headers=headers)
@@ -65,7 +66,7 @@ class AIService:
 
             save_dir = os.path.join("media", "tours")
             os.makedirs(save_dir, exist_ok=True)
-            filename = f"tour_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg" # TODO media/tours/2025/09/15/image.png
+            filename = f"tour_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg" # media/tours/2025/09/15/image.png
             file_path = os.path.join(save_dir, filename)
 
             async with aiofiles.open(file_path, "wb") as f:
