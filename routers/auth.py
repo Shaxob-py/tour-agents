@@ -23,7 +23,7 @@ async def login_view(data: LoginSchema, service: OtpService = Depends(otp_servic
     if not user:
         return ORJSONResponse(
             {"message": "Siz bot orqali ro'yxatdan o'tmagansiz. Iltimos, botdan ro'yxatdan o'ting."},
-            status_code=400
+            status_code=401
         )
 
     code = generate_code()
@@ -60,7 +60,7 @@ async def login_view(phone: str, code: str, service: OtpService = Depends(otp_se
     )
 
 
-@auth_router.post('/refresh-token') # TODO post orqali ishlasin
+@auth_router.post('/refresh-token')
 async def refresh_token(refresh_token: str):
     user_uuid = verify_refresh_token(refresh_token)
     new_access_token = create_access_token({'sub': str(user_uuid)})
