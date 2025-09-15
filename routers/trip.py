@@ -13,7 +13,7 @@ from const import TOUR_PROMPT
 from database import Trip
 from database.base_model import get_session
 from database.trips import TripLike, TripImage
-from schemas.base_schema import TripSchema, ResponseSchema, ReadTripSchema
+from schemas.base_schema import TripSchema, ResponseSchema, ReadTripSchema, APIResponse
 from services.ai_servise import AIService, ai_service
 from utils.security import get_current_user
 from utils.utils import get_travel_days
@@ -21,7 +21,7 @@ from utils.utils import get_travel_days
 trip_agents = APIRouter(tags=["tour"])
 
 
-@trip_agents.post("/trip")
+@trip_agents.post("/trip",response_model=APIResponse)
 async def create_tour(
         data: TripSchema,
         service: AIService = Depends(ai_service),
@@ -53,6 +53,7 @@ async def create_tour(
 
 
 @trip_agents.post("/{trip_id}/like")
+
 async def like_dislike_trip(
         trip_id: UUID,
         is_like: bool,

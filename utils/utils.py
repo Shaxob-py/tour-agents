@@ -1,9 +1,11 @@
+import re
 from datetime import datetime
 from random import randint
 
 import httpx
 
 from core.config import settings
+from database import User
 
 
 def send_telegram_message(chat_id: int, text: str):
@@ -26,3 +28,22 @@ def get_travel_days(start: str, end: str) -> int:
     start_date = datetime.strptime(start, '%d.%m.%Y')
     end_date = datetime.strptime(end, '%d.%m.%Y')
     return (end_date - start_date).days + 1
+
+
+async def check_user(phone_number: str, username: str, telegram_id: int):
+    user = await User.get_telegram_id_by_phone_number(phone_number)
+    if user:
+        return await User.update_by_username(phone_number, username)
+    return await User.create(
+        phone_number=phone_number,
+        username=username,
+        telegram_id=telegram_id,
+    )
+
+
+def normalize_phone(raw: str) -> str:
+    if raw.startswith("+"):
+        raw = raw[1:]
+    return raw
+
+

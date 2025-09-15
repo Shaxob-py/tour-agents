@@ -1,6 +1,6 @@
 from typing import Optional
 
-from sqlalchemy import String, select
+from sqlalchemy import String, select, update
 from sqlalchemy.dialects.mysql import BIGINT
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -25,3 +25,9 @@ class User(CreatedModel):
         query = select(cls.telegram_id).where(cls.phone_number == phone_number)
         result = await db.execute(query)
         return result.scalar_one_or_none()
+
+    @classmethod
+    async def update_by_username(cls, phone_number: str, username: str):
+        query = (update(cls).where(cls.phone_number == phone_number).values(username=username))
+        await db.execute(query)
+        await db.commit()

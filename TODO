@@ -22,3 +22,5 @@ task
 2. trips apida filter, search, pagination
 3. har bir apiga response schema yozish
 4. country_script.py yozish (db ga countries ni qoshib beradigan)
+
+question:

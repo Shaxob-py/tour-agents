@@ -1,5 +1,5 @@
 from datetime import datetime, date
-from typing import Generic, TypeVar
+from typing import Generic, TypeVar, Optional, Any
 
 from pydantic import BaseModel, Field
 
@@ -56,3 +56,11 @@ class ReadTripSchema(BaseModel):
 
     class Config:
         from_attributes = True
+
+class LoginSuccessSchema(BaseModel):
+    access_token: str
+    refresh_token :str
+
+class APIResponse(BaseModel):
+    message: str
+    data: Optional[Any] = None

@@ -52,7 +52,7 @@ class Trip(CreatedModel, Model):
         return (await db.execute(query)).scalar_one_or_none()
 
     @classmethod
-    async def update_view_count(cls, id_):
+    async def update_view_count(cls, id_:int):
         query = (
             update(cls)
             .where(cls.id == id_).values(view_count=+1)
