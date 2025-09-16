@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from fastapi.params import Depends
+from fastapi.params import Depends, Body
 from fastapi.responses import ORJSONResponse
 from starlette import status
 
@@ -16,7 +16,7 @@ def otp_service():
     return OtpService()
 
 
-@auth_router.post('/login',response_model=APIResponse)
+@auth_router.post('/login')
 async def login_view(data: LoginSchema, service: OtpService = Depends(otp_service)):
     user = await User.get_by_phone_number(data.phone)
 
@@ -34,8 +34,8 @@ async def login_view(data: LoginSchema, service: OtpService = Depends(otp_servic
     )
 
 
-@auth_router.post('/token' , response_model=LoginSuccessSchema)
-async def login_view(phone: str, code: str, service: OtpService = Depends(otp_service)):
+@auth_router.post('/token', response_model=LoginSuccessSchema)
+async def login_view(phone: str = Body(), code: str = Body(), service: OtpService = Depends(otp_service)):
     is_verified, user_data = service.verify_code_telegram(phone, code)
 
     if is_verified:

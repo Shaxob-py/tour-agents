@@ -1,10 +1,12 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import DateTime, func, update as sqlalchemy_update, select, delete as sqlalchemy_delete, text
+from sqlalchemy import DateTime, func, update as sqlalchemy_update, select, delete as sqlalchemy_delete, text, or_, \
+    String
 from sqlalchemy.dialects.postgresql.base import UUID
 from sqlalchemy.ext.asyncio import AsyncAttrs, create_async_engine, async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, declared_attr, selectinload
+from sqlalchemy.orm import class_mapper
 
 from core.config import settings
 
@@ -103,6 +105,23 @@ class AbstractClass:
             query = query.options(selectinload(relationship))
 
         return (await db.execute(query)).scalars().all()
+
+    async def search(cls, keyword: str):
+        string_columns = [
+            prop.columns[0]
+            for prop in class_mapper(cls).iterate_properties
+            if hasattr(prop, "columns") and isinstance(prop.columns[0].type, String)
+        ]
+
+        if not string_columns:
+            raise ValueError(f"{cls.__name__} da String ustun yo'q.")
+
+        query = select(cls).where(
+            or_(*map(lambda col: col.ilike(f"%{keyword}%"), string_columns))
+        )
+
+        result = await db.execute(query)
+        return result.scalars().all()
 
 
 class Model(Base, AbstractClass):

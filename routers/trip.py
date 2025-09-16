@@ -1,5 +1,5 @@
 from uuid import UUID
-from datetime import datetime
+from datetime import datetime, date
 from http.client import HTTPException
 
 from fastapi import APIRouter
@@ -13,7 +13,7 @@ from const import TOUR_PROMPT
 from database import Trip
 from database.base_model import get_session
 from database.trips import TripLike, TripImage
-from schemas.base_schema import TripSchema, ResponseSchema, ReadTripSchema, APIResponse
+from schemas.base_schema import TripSchema, ResponseSchema, ReadTripSchema, APIResponse, SearchTripSchema
 from services.ai_servise import AIService, ai_service
 from utils.security import get_current_user
 from utils.utils import get_travel_days
@@ -21,7 +21,7 @@ from utils.utils import get_travel_days
 trip_agents = APIRouter(tags=["tour"])
 
 
-@trip_agents.post("/trip",response_model=APIResponse)
+@trip_agents.post("/trip", response_model=APIResponse)
 async def create_tour(
         data: TripSchema,
         service: AIService = Depends(ai_service),
@@ -40,7 +40,10 @@ async def create_tour(
         start_date=start_date,
         end_date=end_date,
         user_id=current_user.id,
-        is_ai_suggestion=True
+        is_ai_suggestion=True,
+        likes_count=0,
+        dislikes_count=0
+
     )
 
     await TripImage.create(
@@ -53,15 +56,13 @@ async def create_tour(
 
 
 @trip_agents.post("/{trip_id}/like")
-
 async def like_dislike_trip(
         trip_id: UUID,
         is_like: bool,
         session: AsyncSession = Depends(get_session),
         user=Depends(get_current_user),
 ):
-
-    trip =  Trip.get(trip_id)
+    trip = Trip.get(trip_id)
     if not trip:
         raise HTTPException(status_code=404, detail="Trip not found")
 
@@ -108,9 +109,8 @@ async def like_statistics(
     }
 
 
-@trip_agents.get("/trip",response_model=ResponseSchema)
+@trip_agents.get("/trip", response_model=ResponseSchema)
 async def get_tour():
-
     tours = await Trip.get_all()
     return ResponseSchema[list[ReadTripSchema]](
         message='All Tours',
@@ -118,7 +118,7 @@ async def get_tour():
     )
 
 
-@trip_agents.get("/trip{id}",response_model=ReadTripSchema)
+@trip_agents.get("/trip/{id}", response_model=ReadTripSchema)
 async def get_tour_id(id: UUID):
     trip = await Trip.get(id)
     if trip is None:
@@ -130,5 +130,27 @@ async def get_tour_id(id: UUID):
 
     return ResponseSchema[ReadTripSchema](
         message='Trip detail',
-        data=trip
-    )
+        data=trip)
+
+# @trip_agents.get("/trip", response_model=SearchTripSchema)
+# async def filter_trip(
+#     days: int | None = None,
+#     destination: str | None = None,
+#     start_date: str | None = None,
+#     end_date: str | None = None,
+#
+# ):
+#     conditions = []
+#
+#     if days:
+#         conditions.append(f"days == {days}")
+#     if destination:
+#         conditions.append(f"destination ILIKE %{destination}%")
+#     if start_date:
+#         conditions.append(f"start_date == {start_date}")
+#     if end_date:
+#         conditions.append(f"end_date == {end_date}")
+#
+#     return ORJSONResponse({
+#         "data": conditions
+#     })

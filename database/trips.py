@@ -10,7 +10,7 @@ from database import Model
 from database.base_model import db, CreatedModel
 
 
-class Trip(CreatedModel, Model):
+class Trip(CreatedModel):
     away_from: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     destination: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
 

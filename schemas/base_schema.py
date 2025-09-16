@@ -57,10 +57,22 @@ class ReadTripSchema(BaseModel):
     class Config:
         from_attributes = True
 
+
 class LoginSuccessSchema(BaseModel):
     access_token: str
-    refresh_token :str
+    refresh_token: str
+
 
 class APIResponse(BaseModel):
     message: str
     data: Optional[Any] = None
+
+
+class SearchTripSchema(BaseModel):
+    days: int | None = None,
+    destination: str | None = None,
+    start_date: date | None = None,
+    end_date: date | None = None
+
+
+

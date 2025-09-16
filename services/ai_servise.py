@@ -42,7 +42,7 @@ class AIService:
 
     async def handle_image_unsplash(self, query: str) -> str | None:
         url = "https://api.unsplash.com/search/photos"
-        params = {"query": query, "per_page": 1}  # faqat 1 ta rasm
+        params = {"query": query, "per_page": 1}
         headers = {"Authorization": f"Client-ID {UNSPLASH_ACCESS_KEY}"}
 
         async with httpx.AsyncClient(timeout=15.0, follow_redirects=True) as client:
@@ -64,15 +64,18 @@ class AIService:
                 print("Image download failed:", img_resp.status_code)
                 return None
 
-            save_dir = os.path.join("media", "tours")
+            today = datetime.now()
+            save_dir = os.path.join("media", "tours", today.strftime("%Y"), today.strftime("%m"), today.strftime("%d"))
             os.makedirs(save_dir, exist_ok=True)
-            filename = f"tour_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg" # media/tours/2025/09/15/image.png
+
+            filename = f"tour_{today.strftime('%H%M%S')}.jpg"
             file_path = os.path.join(save_dir, filename)
 
             async with aiofiles.open(file_path, "wb") as f:
                 await f.write(img_resp.content)
 
-            return os.path.join("/media/tours", filename)
+            return os.path.join("/media/tours", today.strftime("%Y"), today.strftime("%m"), today.strftime("%d"),
+                                filename)
 
 
 def ai_service() -> AIService:
