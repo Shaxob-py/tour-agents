@@ -22,15 +22,22 @@ async def lifespan(_app: FastAPI):
     # await db.drop_all()
     print('project toxtadi')
 
+
 # TODO api/v1/
 
 app = FastAPI(
     docs_url='/',
-    root_path='/api/v1',
     title="Tour Agency API",
     description="JWT Authentication bilan himoyalangan API",
     lifespan=lifespan,
 )
+MEDIA_DIR = os.path.join(os.getcwd(), "media")
+
+if not os.path.exists(MEDIA_DIR):
+    os.makedirs(MEDIA_DIR)
+
+app.mount("/media", StaticFiles(directory=MEDIA_DIR), name="media")
+
 origins = [
     "http://localhost.tiangolo.com",
     "https://localhost.tiangolo.com",
@@ -90,4 +97,4 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
     )
 
 
-app.include_router(router)
+app.include_router(router, prefix="/api/v1")

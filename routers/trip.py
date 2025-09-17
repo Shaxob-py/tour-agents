@@ -37,6 +37,7 @@ async def create_tour(
         away_from=data.where,
         description=return_text,
         destination=data.to,
+        days=days,
         start_date=start_date,
         end_date=end_date,
         user_id=current_user.id,
@@ -115,7 +116,7 @@ async def like_statistics(
     }
 
 
-@trip_agents.get("/trip", response_model=ResponseSchema)
+@trip_agents.get("/trip", response_model=ResponseSchema[list[ReadTripSchema]])
 async def get_tour():
     tours = await Trip.get_all()
     return ResponseSchema[list[ReadTripSchema]](
@@ -123,8 +124,7 @@ async def get_tour():
         data=tours,
     )
 
-
-@trip_agents.get("/trip/{id}", response_model=ReadTripSchema)
+@trip_agents.get("/trip/{id}", response_model=ResponseSchema[ReadTripSchema])
 async def get_tour_id(id: UUID):
     trip = await Trip.get(id)
     if trip is None:

@@ -1,5 +1,6 @@
 from datetime import datetime, date
 from typing import Generic, TypeVar, Optional, Any
+from uuid import UUID
 
 from pydantic import BaseModel, Field
 
@@ -41,6 +42,7 @@ class ImageSchema(BaseModel):
 
 
 class ReadTripSchema(BaseModel):
+    id : UUID = Field(...)
     away_from: str
     destination: str
     description: str
