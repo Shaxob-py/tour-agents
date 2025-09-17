@@ -55,7 +55,7 @@ async def create_tour(
         'image': image})
 
 
-@trip_agents.post("/{trip_id}/like")
+@trip_agents.post("/{trip_id}/like") # TODO post ichidan olish kk
 async def like_dislike_trip(
         trip_id: UUID,
         is_like: bool,
@@ -77,12 +77,18 @@ async def like_dislike_trip(
     if trip_like:
         trip_like.is_like = is_like
     else:
-        trip_like = TripLike(
+        await TripLike.create(
             trip_id=trip_id,
             user_id=user.id,
             is_like=is_like
         )
-        session.add(trip_like)
+        # TODO style ni ozgartirish
+        # trip_like = TripLike(
+        #     trip_id=trip_id,
+        #     user_id=user.id,
+        #     is_like=is_like
+        # )
+        # session.add(trip_like)
 
     await session.commit()
     return {"message": "Success", "trip_id": str(trip_id), "is_like": is_like}

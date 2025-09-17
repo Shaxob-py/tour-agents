@@ -11,7 +11,7 @@ from database import User
 def send_telegram_message(chat_id: int, text: str):
     url = f"https://api.telegram.org/bot{settings.TELEGRAM_BOT_TOKEN}/sendMessage"
     payload = {"chat_id": chat_id, "text": text}
-    response = httpx.post(url, data=payload)
+    response = httpx.post(url, data=payload) # TODO async
     return response.json()
 
 
@@ -41,7 +41,7 @@ async def check_user(phone_number: str, username: str, telegram_id: int):
     )
 
 
-def normalize_phone(raw: str) -> str:
+def normalize_phone(raw: str) -> str:  # TODO 998901001010
     if raw.startswith("+"):
         raw = raw[1:]
     return raw

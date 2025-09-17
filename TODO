@@ -23,3 +23,15 @@ task
 3. har bir apiga response schema yozish
 4. country_script.py yozish (db ga countries ni qoshib beradigan)
 
+
+task
+1. response larni structure ga otkazish
+{
+    "message": "xabar",
+    "data": []
+}
+
+2. sariqlarni yoqotish
+3. fake data toldirish
+4.
+
