@@ -22,7 +22,7 @@ class Trip(CreatedModel):
     view_count: Mapped[int] = mapped_column(Integer, default=0)
 
     user_id: Mapped[Optional[UUID]] = mapped_column(ForeignKey("users.id"))
-    created_by: Mapped["User"] = relationship("User", back_populates="trips")
+    created_by: Mapped["User"] = relationship("User", back_populates="trips") # noqa
 
     images: Mapped[list["TripImage"]] = relationship("TripImage", back_populates="trip", cascade="all, delete-orphan")
     likes: Mapped[list["TripLike"]] = relationship("TripLike", back_populates="trip", cascade="all, delete-orphan")
@@ -63,16 +63,16 @@ class Trip(CreatedModel):
 
 class TripImage(Model):
     trip_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("trips.id"))
-    url: Mapped[str] = mapped_column(String(255), nullable=False)  # TODO nullable=False kerak emas
+    url: Mapped[str] = mapped_column(String(255))
 
     trip: Mapped["Trip"] = relationship("Trip", back_populates="images")
 
 
 class TripLike(Model):
-    trip_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("trips.id"), nullable=False)
+    trip_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("trips.id"))
     trip: Mapped["Trip"] = relationship("Trip", back_populates="likes")
 
     user_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     is_like: Mapped[bool] = mapped_column(Boolean, nullable=True)
 
-    user: Mapped["User"] = relationship("User")
+    user: Mapped["User"] = relationship("User") # noqa

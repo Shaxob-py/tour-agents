@@ -12,7 +12,7 @@ UNSPLASH_ACCESS_KEY = settings.UNSPLASH_ACCESS_KEY
 
 class AIService:
 
-    async def ai_text_generator(self, text):
+    async def ai_text_generator(self, text): # noqa
         headers = {
             "Authorization": f"Bearer {settings.DEEPSEEK_AI_API_TOKEN}",
             "Content-Type": "application/json"
@@ -40,7 +40,7 @@ class AIService:
         else:
             return text
 
-    async def handle_image_unsplash(self, query: str) -> str | None:
+    async def handle_image_unsplash(self, query: str) -> str | None: # noqa
         url = "https://api.unsplash.com/search/photos"
         params = {"query": query, "per_page": 1}
         headers = {"Authorization": f"Client-ID {UNSPLASH_ACCESS_KEY}"}

@@ -41,9 +41,8 @@ async def check_user(phone_number: str, username: str, telegram_id: int):
     )
 
 
-def normalize_phone(raw: str) -> str:  # TODO 998901001010
-    if raw.startswith("+"):
-        raw = raw[1:]
-    return raw
-
-
+def normalize_phone(raw: str) -> str:
+    digits = re.sub(r"\D", "", raw)
+    if digits.startswith("998"):
+        digits = digits[3:]
+    return digits

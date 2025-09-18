@@ -2,10 +2,10 @@ from uuid import UUID
 from datetime import datetime, date
 from http.client import HTTPException
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Query
 from fastapi.params import Depends
 from fastapi.responses import ORJSONResponse
-from sqlalchemy import select, func
+from sqlalchemy import select, func, or_, desc
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
@@ -21,7 +21,7 @@ from utils.utils import get_travel_days
 trip_agents = APIRouter(tags=["tour"])
 
 
-@trip_agents.post("/trip", response_model=APIResponse)
+@trip_agents.post("/trips", response_model=APIResponse)
 async def create_tour(
         data: TripSchema,
         service: AIService = Depends(ai_service),
@@ -39,7 +39,7 @@ async def create_tour(
         destination=data.to,
         start_date=start_date,
         end_date=end_date,
-        user_id=current_user.id,
+        user_id=current_user.id, # noqa
         is_ai_suggestion=True,
         likes_count=0,
         dislikes_count=0
@@ -55,7 +55,7 @@ async def create_tour(
         'image': image})
 
 
-@trip_agents.post("/{trip_id}/like") # TODO post ichidan olish kk
+@trip_agents.post("/{trips_id}/like/{is_like}")
 async def like_dislike_trip(
         trip_id: UUID,
         is_like: bool,
@@ -64,12 +64,12 @@ async def like_dislike_trip(
 ):
     trip = Trip.get(trip_id)
     if not trip:
-        raise HTTPException(status_code=404, detail="Trip not found")
+        raise HTTPException(status_code=404, detail="Trip not found") # noqa
 
     result = await session.execute(
         select(TripLike).where(
             TripLike.trip_id == trip_id,
-            TripLike.user_id == user.id
+            TripLike.user_id == user.id # noqa
         )
     )
     trip_like = result.scalar_one_or_none()
@@ -79,22 +79,16 @@ async def like_dislike_trip(
     else:
         await TripLike.create(
             trip_id=trip_id,
-            user_id=user.id,
+            user_id=user.id, # noqa
             is_like=is_like
         )
-        # TODO style ni ozgartirish
-        # trip_like = TripLike(
-        #     trip_id=trip_id,
-        #     user_id=user.id,
-        #     is_like=is_like
-        # )
-        # session.add(trip_like)
 
     await session.commit()
     return {"message": "Success", "trip_id": str(trip_id), "is_like": is_like}
 
 
-@trip_agents.get("/{trip_id}/like_statistics")
+
+@trip_agents.get("/{trips_id}/like_statistics")
 async def like_statistics(
         trip_id: UUID,
         session: AsyncSession = Depends(get_session),
@@ -115,24 +109,73 @@ async def like_statistics(
     }
 
 
-@trip_agents.get("/trip", response_model=ResponseSchema)
-async def get_tour():
-    tours = await Trip.get_all()
-    return ResponseSchema[list[ReadTripSchema]](
-        message='All Tours',
-        data=tours,
-    )
+@trip_agents.get("/trips")
+async def get_tour(
+        page: int = Query(1, ge=1),
+        limit: int = Query(10, ge=1, le=100),
+        search: str | None = None,
+        destination: str | None = None,
+        session: AsyncSession = Depends(get_session),
+):
+    stmt = select(Trip)
+
+    if search:
+        stmt = stmt.where(
+            or_(
+                Trip.destination.ilike(f'%{search}%'),
+                Trip.description.ilike(f'%{search}%')
+            )
+        )
+
+    if destination:
+        stmt = stmt.where(Trip.destination.ilike(f'%{destination}%'))
+
+    count_stmt = select(func.count()).select_from(stmt.subquery())
+    total = (await session.execute(count_stmt)).scalar()
+
+    # pagination
+    stmt = stmt.order_by(desc(Trip.created_at)).offset((page - 1) * limit).limit(limit)
+    result = await session.execute(stmt)
+    trips = result.scalars().all()
+
+    trip_ids = [t.id for t in trips]
+    img_dict = {}
+    if trip_ids:
+        img_stmt = select(TripImage).where(TripImage.trip_id.in_(trip_ids))
+        img_result = await session.execute(img_stmt)
+        images = img_result.scalars().all()
+        img_dict = {i.trip_id: i.url for i in images}
+
+    return ORJSONResponse({
+        "data": [
+            {
+                "id": str(t.id),
+                "destination": t.destination,
+                "description": t.description,
+                "start_date": t.start_date.strftime("%d.%m.%Y"), # noqa
+                "end_date": t.end_date.strftime("%d.%m.%Y"),  # noqa
+                "image": img_dict.get(t.id)
+            }
+            for t in trips
+        ],
+        "pagination": {
+            "page": page,
+            "limit": limit,
+            "total": total
+        }
+    })
 
 
-@trip_agents.get("/trip/{id}", response_model=ReadTripSchema)
-async def get_tour_id(id: UUID):
+
+@trip_agents.get("/trips/{id}", response_model=ReadTripSchema)
+async def get_tour_id(id: UUID): # noqa
     trip = await Trip.get(id)
     if trip is None:
         return ORJSONResponse(
             status_code=status.HTTP_404_NOT_FOUND,
             content={'message': 'trip not found', 'data': None}
         )
-    await Trip.update_view_count(id)
+    await Trip.update_view_count(id) # noqa
 
     return ResponseSchema[ReadTripSchema](
         message='Trip detail',

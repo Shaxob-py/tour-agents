@@ -1,4 +1,6 @@
 import os
+
+
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -22,7 +24,7 @@ async def lifespan(_app: FastAPI):
     # await db.drop_all()
     print('project toxtadi')
 
-# TODO api/v1/
+
 
 app = FastAPI(
     docs_url='/',
@@ -53,9 +55,9 @@ def custom_openapi():
         return app.openapi_schema
 
     openapi_schema = get_openapi(
-        title=app.title,
+        title=app.title, # noqa
         version="1.0.0",
-        description=app.description,
+        description=app.description, # noqa
         routes=app.routes,
     )
 
