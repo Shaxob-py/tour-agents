@@ -65,7 +65,7 @@ class AbstractClass:
 
     @classmethod
     async def create(cls, **kwargs):  # Create
-        object_ = cls(**kwargs)
+        object_ = cls(**kwargs) # noqa
         db.add(object_)
         await cls.commit()
         return object_
@@ -74,7 +74,7 @@ class AbstractClass:
     async def update(cls, id_, **kwargs):
         query = (
             sqlalchemy_update(cls)
-            .where(cls.id == id_)
+            .where(cls.id == id_) # noqa
             .values(**kwargs)
             .execution_options(synchronize_session="fetch")
             .returning(cls)
@@ -85,12 +85,12 @@ class AbstractClass:
 
     @classmethod
     async def get(cls, id_):
-        query = select(cls).where(cls.id == id_)
+        query = select(cls).where(cls.id == id_) # noqa
         return (await db.execute(query)).scalar()
 
     @classmethod
     async def delete(cls, id_):
-        query = sqlalchemy_delete(cls).where(cls.id == id_)
+        query = sqlalchemy_delete(cls).where(cls.id == id_) # noqa
         await db.execute(query)
         await cls.commit()
 
@@ -106,10 +106,10 @@ class AbstractClass:
 
         return (await db.execute(query)).scalars().all()
 
-    async def search(cls, keyword: str):
+    async def search(cls, keyword: str): # noqa
         string_columns = [
             prop.columns[0]
-            for prop in class_mapper(cls).iterate_properties
+            for prop in class_mapper(cls).iterate_properties # noqa
             if hasattr(prop, "columns") and isinstance(prop.columns[0].type, String)
         ]
 
@@ -140,4 +140,4 @@ class CreatedModel(Model):
 
 
 async def get_session():
-    yield db._session
+    yield db._session # noqa

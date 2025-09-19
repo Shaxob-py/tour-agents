@@ -9,10 +9,10 @@ from database.trips import TripLike
 
 
 class User(CreatedModel):
-    username: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    # username: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     phone_number: Mapped[Optional[str]] = mapped_column(String(25), unique=True)
     telegram_id: Mapped[Optional[int]] = mapped_column(BIGINT, unique=True)
-    trips: Mapped[list["Trip"]] = relationship("Trip", back_populates="created_by")
+    trips: Mapped[list["Trip"]] = relationship("Trip", back_populates="created_by") # noqa
     trips_like: Mapped[list["TripLike"]] = relationship("TripLike", back_populates="user")
 
     @classmethod
