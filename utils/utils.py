@@ -47,4 +47,9 @@ def normalize_phone(raw: str) -> str:  # TODO 998 901001 010
         raw = raw[1:]
     return raw.replace(' ', '')
 
+def normalize_phonee(raw: str) -> str:
+    return ''.join(c for c in raw if c.isdigit())
+
+print(normalize_phonee(normalize_phone("+1 -2 3 4 5 6 7 8 9 10")))
+print(normalize_phone(normalize_phone("+1 -2 3 4 5 6 7 8 9 10")))
 
