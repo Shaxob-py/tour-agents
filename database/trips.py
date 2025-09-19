@@ -70,17 +70,6 @@ class Trip(CreatedModel):
         await db.commit()
 
 
-
-
-
-
-
-
-
-
-
-
-
 class TripImage(Model):
     trip_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("trips.id"))
     url: Mapped[str] = mapped_column(String(255))  # TOD kerak emas
@@ -105,13 +94,13 @@ class TripLike(Model):
 
     @classmethod
     async def create_or_update(cls, trip_id, user_id, is_like):
-        trip = select(cls).where(cls.trip_id == trip_id)
-        if trip:
+        result = await db.execute(select(cls).where(cls.trip_id == trip_id))
+        trip_like = result.scalars().first()
+
+        if trip_like:
             return await TripLike.update_like(trip_id, is_like)
         return await TripLike.create(
             user_id=user_id,
             trip_id=trip_id,
-        is_like = is_like,
+            is_like=is_like,
         )
-
-
