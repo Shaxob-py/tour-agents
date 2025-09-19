@@ -55,44 +55,7 @@ async def create_tour(
         'messages': return_text,
         'image': image})
 
-
-@trip_agents.post("/{trip_id}/like") # TODO post ichidan olish kk
-async def like_dislike_trip(
-        trip_id: UUID,
-        is_like: bool,
-        session: AsyncSession = Depends(get_session),
-        user=Depends(get_current_user),
-):
-    trip = Trip.get(trip_id)
-    if not trip:
-        raise HTTPException(status_code=404, detail="Trip not found")
-
-    result = await session.execute(
-        select(TripLike).where(
-            TripLike.trip_id == trip_id,
-            TripLike.user_id == user.id
-        )
-    )
-    trip_like = result.scalar_one_or_none()
-
-    if trip_like:
-        trip_like.is_like = is_like
-    else:
-        await TripLike.create(
-            trip_id=trip_id,
-            user_id=user.id,
-            is_like=is_like
-        )
-        # TODO style ni ozgartirish
-        # trip_like = TripLike(
-        #     trip_id=trip_id,
-        #     user_id=user.id,
-        #     is_like=is_like
-        # )
-        # session.add(trip_like)
-
-    await session.commit()
-    return {"message": "Success", "trip_id": str(trip_id), "is_like": is_like}
+    # return {"message": "Success", "trip_id": str(trip_id), "is_like": is_like}
 
 
 @trip_agents.get("/{trip_id}/like_statistics")
@@ -116,6 +79,11 @@ async def like_statistics(
     }
 
 
+@trip_agents.post("/trip/like")
+async def like(is_like: bool, trip_id: UUID, current_user=Depends(get_current_user)):
+    await TripLike.create_or_update(trip_id, current_user.id, is_like)
+    await Trip.like_update(trip_id, is_like)
+
 @trip_agents.get("/trip", response_model=ResponseSchema[list[ReadTripSchema]])
 async def get_tour():
     tours = await Trip.get_all()
@@ -123,6 +91,7 @@ async def get_tour():
         message='All Tours',
         data=tours,
     )
+
 
 @trip_agents.get("/trip/{id}", response_model=ResponseSchema[ReadTripSchema])
 async def get_tour_id(id: UUID):

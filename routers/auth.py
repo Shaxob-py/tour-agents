@@ -27,7 +27,7 @@ async def login_view(data: LoginSchema, service: OtpService = Depends(otp_servic
         )
 
     code = generate_code()
-    service.send_otp_by_telegram(user, code)
+    await service.send_otp_by_telegram(user, code)
 
     return ORJSONResponse(
         {"message": "Tasdiqlash kodi telegram orqali yuborildi"}

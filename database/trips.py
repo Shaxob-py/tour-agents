@@ -52,7 +52,7 @@ class Trip(CreatedModel):
         return (await db.execute(query)).scalar_one_or_none()
 
     @classmethod
-    async def update_view_count(cls, id_:int):
+    async def update_view_count(cls, id_: int):
         query = (
             update(cls)
             .where(cls.id == id_).values(view_count=+1)
@@ -60,19 +60,47 @@ class Trip(CreatedModel):
         await db.execute(query)
         await db.commit()
 
+    @classmethod
+    async def like_update(cls, id_: UUID, is_like: bool, ):
+        if is_like:
+            query = update(cls).where(cls.id == id_).values(likes_count=+1)
+        else:
+            query = update(cls).where(cls.id == id_).values(likes_count=-1)
+        await db.execute(query)
+        await db.commit()
+
 
 class TripImage(Model):
     trip_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("trips.id"))
-    url: Mapped[str] = mapped_column(String(255), nullable=False)  # TODO nullable=False kerak emas
+    url: Mapped[str] = mapped_column(String(255))  # TOD kerak emas
 
     trip: Mapped["Trip"] = relationship("Trip", back_populates="images")
 
 
 class TripLike(Model):
-    trip_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("trips.id"), nullable=False)
+    trip_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("trips.id"))
     trip: Mapped["Trip"] = relationship("Trip", back_populates="likes")
 
-    user_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    user_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"))
     is_like: Mapped[bool] = mapped_column(Boolean, nullable=True)
 
     user: Mapped["User"] = relationship("User")
+
+    @classmethod
+    async def update_like(cls, trip_id: UUID, is_like: str):
+        query = (update(cls).where(cls.id == trip_id).values(is_like=is_like))
+        await db.execute(query)
+        await db.commit()
+
+    @classmethod
+    async def create_or_update(cls, trip_id, user_id, is_like):
+        trip = select(cls).where(cls.trip_id == trip_id)
+        if trip:
+            return await TripLike.update_like(trip_id, is_like)
+        return await TripLike.create(
+            user_id=user_id,
+            trip_id=trip_id,
+        is_like = is_like,
+        )
+
+

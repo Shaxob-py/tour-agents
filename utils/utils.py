@@ -3,15 +3,16 @@ from datetime import datetime
 from random import randint
 
 import httpx
+from sqlalchemy.util import await_only
 
 from core.config import settings
 from database import User
 
 
-def send_telegram_message(chat_id: int, text: str):
+async def send_telegram_message(chat_id: int, text: str):
     url = f"https://api.telegram.org/bot{settings.TELEGRAM_BOT_TOKEN}/sendMessage"
     payload = {"chat_id": chat_id, "text": text}
-    response = httpx.post(url, data=payload) # TODO async
+    response = httpx.post(url, data=payload)
     return response.json()
 
 
@@ -19,9 +20,9 @@ def generate_code() -> int:
     return randint(100000, 999999)
 
 
-def verification_send_telegram(chat_id: int, code: int):
+async def verification_send_telegram(chat_id: int, code: int):
     text = f"🔑 Your verification code is: {code}"
-    return send_telegram_message(chat_id, text)
+    return await send_telegram_message(chat_id, text)
 
 
 def get_travel_days(start: str, end: str) -> int:
@@ -41,9 +42,9 @@ async def check_user(phone_number: str, username: str, telegram_id: int):
     )
 
 
-def normalize_phone(raw: str) -> str:  # TODO 998901001010
+def normalize_phone(raw: str) -> str:  # TODO 998 901001 010
     if raw.startswith("+"):
         raw = raw[1:]
-    return raw
+    return raw.replace(' ', '')
 
 
