@@ -1,6 +1,5 @@
+from datetime import datetime
 from uuid import UUID
-from datetime import datetime, date
-from http.client import HTTPException
 
 from fastapi import APIRouter
 from fastapi.params import Depends
@@ -13,7 +12,7 @@ from const import TOUR_PROMPT
 from database import Trip
 from database.base_model import get_session
 from database.trips import TripLike, TripImage
-from schemas.base_schema import TripSchema, ResponseSchema, ReadTripSchema, APIResponse, SearchTripSchema
+from schemas.base_schema import TripSchema, ResponseSchema, ReadTripSchema, APIResponse
 from services.ai_servise import AIService, ai_service
 from utils.security import get_current_user
 from utils.utils import get_travel_days

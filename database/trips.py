@@ -70,6 +70,17 @@ class Trip(CreatedModel):
         await db.commit()
 
 
+
+
+
+
+
+
+
+
+
+
+
 class TripImage(Model):
     trip_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("trips.id"))
     url: Mapped[str] = mapped_column(String(255))  # TOD kerak emas
@@ -88,7 +99,7 @@ class TripLike(Model):
 
     @classmethod
     async def update_like(cls, trip_id: UUID, is_like: str):
-        query = (update(cls).where(cls.id == trip_id).values(is_like=is_like))
+        query = (update(cls).where(cls.trip_id == trip_id).values(is_like=is_like))
         await db.execute(query)
         await db.commit()
 
