@@ -1,8 +1,16 @@
 import asyncio
+import os
+import sys
+from pathlib import Path
 from typing import List
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
+
+BASE_DIR = Path(__file__).resolve().parent
+sys.path.append(os.path.join(BASE_DIR, '..'))
+
 from core.config import settings
 from database import Country
 
@@ -44,3 +52,7 @@ def main():
         print(f"ℹ️  {existing_count} countries already existed in database.")
     except Exception as e:
         print(f"❌ Error: {e}")
+
+
+if __name__ == '__main__':
+    main()

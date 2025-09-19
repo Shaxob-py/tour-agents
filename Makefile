@@ -22,3 +22,6 @@ compile:
 
 update:
 	pybabel update -d locales -D messages -i locales/messages.pot
+
+country_script:
+	python3 utils/country_script.py
