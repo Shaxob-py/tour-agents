@@ -40,7 +40,7 @@ async def create_tour(
         days=days,
         start_date=start_date,
         end_date=end_date,
-        user_id=current_user.id,
+        user_id=current_user.id, # noqa
         is_ai_suggestion=True,
         likes_count=0,
         dislikes_count=0
@@ -81,7 +81,7 @@ async def like_statistics(
 
 @trip_agents.post("/trip/like")
 async def like(is_like: bool, trip_id: UUID, current_user=Depends(get_current_user)):
-    await TripLike.create_or_update(trip_id, current_user.id, is_like)
+    await TripLike.create_or_update(trip_id, current_user.id, is_like) # noqa
     await Trip.like_update(trip_id, is_like)
 
 @trip_agents.get("/trip", response_model=ResponseSchema[list[ReadTripSchema]])
@@ -101,7 +101,7 @@ async def get_tour_id(id: UUID):
             status_code=status.HTTP_404_NOT_FOUND,
             content={'message': 'trip not found', 'data': None}
         )
-    await Trip.update_view_count(id)
+    await Trip.update_view_count(id) # noqa
 
     return ResponseSchema[ReadTripSchema](
         message='Trip detail',
