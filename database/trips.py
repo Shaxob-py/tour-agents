@@ -94,7 +94,7 @@ class TripLike(Model):
 
     @classmethod
     async def create_or_update(cls, trip_id, user_id, is_like):
-        result = await db.execute(select(cls).where(cls.trip_id == trip_id))
+        result = await db.execute(select(cls).where(cls.trip_id == trip_id, cls.user_id == user_id))
         trip_like = result.scalars().first()
 
         if trip_like:
