@@ -3,13 +3,12 @@ from datetime import datetime
 from random import randint
 
 import httpx
-from sqlalchemy.util import await_only
 
 from core.config import settings
 from database import User
 
 
-async def send_telegram_message(chat_id: int, text: str):
+def send_telegram_message(chat_id: int, text: str):
     url = f"https://api.telegram.org/bot{settings.TELEGRAM_BOT_TOKEN}/sendMessage"
     payload = {"chat_id": chat_id, "text": text}
     response = httpx.post(url, data=payload)
@@ -20,9 +19,9 @@ def generate_code() -> int:
     return randint(100000, 999999)
 
 
-async def verification_send_telegram(chat_id: int, code: int):
+def verification_send_telegram(chat_id: int, code: int):
     text = f"🔑 Your verification code is: {code}"
-    return await send_telegram_message(chat_id, text)
+    return send_telegram_message(chat_id, text)
 
 
 def get_travel_days(start: str, end: str) -> int:
@@ -42,14 +41,8 @@ async def check_user(phone_number: str, username: str, telegram_id: int):
     )
 
 
-def normalize_phone(raw: str) -> str:  # TODO 998 901001 010
-    if raw.startswith("+"):
-        raw = raw[1:]
-    return raw.replace(' ', '')
-
-def normalize_phonee(raw: str) -> str:
-    return ''.join(c for c in raw if c.isdigit())
-
-print(normalize_phonee(normalize_phone("+1 -2 3 4 5 6 7 8 9 10")))
-print(normalize_phone(normalize_phone("+1 -2 3 4 5 6 7 8 9 10")))
-
+def normalize_phone(raw: str) -> str:
+    digits = re.sub(r"\D", "", raw)
+    if digits.startswith("998"):
+        digits = digits[3:]
+    return digits
