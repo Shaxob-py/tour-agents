@@ -1,4 +1,3 @@
-import re
 from datetime import datetime
 from random import randint
 
@@ -42,7 +41,6 @@ async def check_user(phone_number: str, username: str, telegram_id: int):
 
 
 def normalize_phone(raw: str) -> str:
-    digits = re.sub(r"\D", "", raw)
-    if digits.startswith("998"):
-        digits = digits[3:]
-    return digits
+    return ''.join(c for c in raw if c.isdigit())
+
+

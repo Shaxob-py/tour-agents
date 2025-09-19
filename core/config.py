@@ -27,10 +27,10 @@ class Settings(BaseSettings):
     DEEPSEEK_AI_API_TOKEN: str = Field()
 
     UNSPLASH_ACCESS_KEY : str = Field()
-
-    @property
-    def postgres_sync_url(self):
-        return f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DATABASE}"
+    #
+    # @property
+    # def postgres_sync_url(self):
+    #     return f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DATABASE}"
 
     @property
     def postgres_async_url(self):

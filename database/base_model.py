@@ -5,8 +5,10 @@ from sqlalchemy import DateTime, func, update as sqlalchemy_update, select, dele
     String
 from sqlalchemy.dialects.postgresql.base import UUID
 from sqlalchemy.ext.asyncio import AsyncAttrs, create_async_engine, async_sessionmaker
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, declared_attr, selectinload
 from sqlalchemy.orm import class_mapper
+from sqlalchemy.orm import sessionmaker
 
 from core.config import settings
 
@@ -49,6 +51,9 @@ class Database:
         async with self._engine.begin() as engine:
             await engine.run_sync(Base.metadata.drop_all)
 
+    @property
+    def engine(self):
+        return self._engine
 
 db = Database()
 db.init()
@@ -141,3 +146,9 @@ class CreatedModel(Model):
 
 async def get_session():
     yield db._session # noqa
+
+async_session_maker = sessionmaker(
+    db.engine,
+    class_=AsyncSession,
+    expire_on_commit=False
+)

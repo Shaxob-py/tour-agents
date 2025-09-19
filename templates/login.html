@@ -1,0 +1,117 @@
+{% extends "layout.html" %}
+{% block header %}{% endblock %}
+{% block sidebar %}{% endblock %}
+{% block content %}
+<div class="container-tight py-5">
+    {% if login_logo_url or logo_url %}
+        <div class="text-center mb-4">
+            <a href="." class="navbar-brand navbar-brand-autodark">
+                <img src="{{ login_logo_url or logo_url }}" height="50" alt="Logo"/>
+            </a>
+        </div>
+    {% endif %}
+
+    <form class="card shadow-lg border-0 rounded-3" action="{{ request.url }}" method="POST">
+        <div class="card-body p-4">
+            <h2 class="card-title text-center mb-4 fw-bold">Trip agent ✈</h2>
+
+            {% if error %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="ti ti-alert-circle me-2"></i> {{ error }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+                </div>
+            {% endif %}
+
+            <!-- Phone Number -->
+            <div class="mb-3">
+                <label class="form-label">{{ _("Phone Number") }}</label>
+                <input type="tel"
+                       name="username"
+                       id="phone"
+                       class="form-control {% if form_errors and form_errors.has('phone_number') %}is-invalid{% endif %}"
+                       placeholder="+998 (90) 123-45-67"
+                       autocomplete="tel"
+                       inputmode="tel"
+                       pattern="^\+998 \(\d{2}\) \d{3}-\d{2}-\d{2}$" />
+                {% if form_errors and form_errors.has('phone_number') %}
+                    <div class="invalid-feedback">{{ form_errors.msg('phone_number') }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Password -->
+            <div class="mb-3">
+                <label class="form-label">{{ _("Password") }}</label>
+                <input type="password"
+                       name="password"
+                       class="form-control {% if form_errors and form_errors.has('password') %}is-invalid{% endif %}"
+                       placeholder="********"
+                       autocomplete="current-password"/>
+                {% if form_errors and form_errors.has('password') %}
+                    <div class="invalid-feedback">{{ form_errors.msg('password') }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Remember me -->
+            <div class="mb-3 form-check">
+                <input name="remember_me" type="checkbox" class="form-check-input" id="rememberMe"/>
+                <label class="form-check-label" for="rememberMe">{{ _("Remember me") }}</label>
+            </div>
+
+            <!-- Submit -->
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="ti ti-login me-1"></i> {{ _("Sign in") }}
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const phoneInput = document.getElementById('phone');
+
+    phoneInput.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, ''); // Only numbers
+
+        // Remove +998 prefix if user types it
+        if (value.startsWith('998')) {
+            value = value.slice(3);
+        }
+
+        // Limit to 9 digits after +998
+        if (value.length > 9) {
+            value = value.slice(0, 9);
+        }
+
+        // Format: +998 (XX) XXX-XX-XX
+        let formatted = '+998 ';
+
+        if (value.length > 0) {
+            formatted += '(' + value.substring(0, Math.min(2, value.length));
+        }
+        if (value.length >= 2) {
+            formatted += ') ';
+            if (value.length > 2) {
+                formatted += value.substring(2, Math.min(5, value.length));
+            }
+        }
+        if (value.length >= 5) {
+            formatted += '-' + value.substring(5, Math.min(7, value.length));
+        }
+        if (value.length >= 7) {
+            formatted += '-' + value.substring(7, 9);
+        }
+
+        e.target.value = formatted;
+    });
+
+    // Handle paste events
+    phoneInput.addEventListener('paste', function(e) {
+        setTimeout(() => {
+            phoneInput.dispatchEvent(new Event('input'));
+        }, 0);
+    });
+});
+</script>
+{% endblock %}

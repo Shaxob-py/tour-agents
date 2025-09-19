@@ -6,10 +6,12 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.openapi.utils import get_openapi
 from starlette import status
 from starlette.middleware.cors import CORSMiddleware
+from starlette.middleware.sessions import SessionMiddleware
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 from starlette.staticfiles import StaticFiles
 
+from admin import admin          # admin obyektini import qilamiz
 from database.base_model import db
 from routers import router
 
@@ -17,13 +19,12 @@ from routers import router
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
     await db.create_all()
+    admin.mount_to(app)          # shu yerda app ga mount qilamiz
     print('project ishga tushdi')
     yield
-    # await db.drop_all()
     print('project toxtadi')
 
 
-# TODO api/v1/
 
 app = FastAPI(
     docs_url='/',
@@ -54,7 +55,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
+app.add_middleware(SessionMiddleware, secret_key="supersecretkey")
 def custom_openapi():
     if app.openapi_schema:
         return app.openapi_schema
