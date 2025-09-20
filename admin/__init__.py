@@ -4,7 +4,7 @@ from admin.auth import UsernameAndPasswordProvider
 from database import User
 from database.base_model import db
 
-# faqat admin obyektini yaratamiz
+
 admin = Admin(
     engine=db.engine,
     title="Trip",
@@ -12,5 +12,4 @@ admin = Admin(
     auth_provider=UsernameAndPasswordProvider()
 )
 
-# model qo‘shamiz
 admin.add_view(ModelView(User))

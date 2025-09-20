@@ -17,7 +17,7 @@ class OtpService:
         await verification_send_telegram(user.telegram_id, code)
         return True, 0
 
-    def verify_code_telegram(self, phone: str, code: str) -> tuple[bool, dict | None]:
+    async def verify_code_telegram(self, phone: str, code: str) -> tuple[bool, dict | None]:
         saved_code = self.redis_client.get(phone)
 
         if saved_code:
