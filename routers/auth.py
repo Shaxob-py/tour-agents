@@ -4,7 +4,7 @@ from fastapi.responses import ORJSONResponse
 from starlette import status
 
 from database import User
-from schemas.base_schema import LoginSchema, LoginSuccessSchema
+from schemas.base_schema import LoginSchema, LoginSuccessSchema, RefreshTokenSchema
 from services.otp_services import OtpService
 from utils.security import create_access_token, create_refresh_token, verify_refresh_token
 from utils.utils import generate_code
@@ -59,7 +59,7 @@ async def login_view(phone: str = Body(), code: str = Body(), service: OtpServic
 
 
 @auth_router.post('/refresh-token', response_model=LoginSuccessSchema)
-async def refresh_token(refresh_token: str): # noqa
+async def refresh_token(payload: RefreshTokenSchema): # noqa
     user_uuid = verify_refresh_token(refresh_token)
     new_access_token = create_access_token({'sub': str(user_uuid)})
     return {

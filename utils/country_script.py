@@ -1,12 +1,10 @@
 import asyncio
+import json
 import os
 import sys
 from pathlib import Path
-from typing import List
-
 from sqlalchemy import select
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
-from sqlalchemy.orm import sessionmaker
+from database.base_model import db
 
 BASE_DIR = Path(__file__).resolve().parent
 sys.path.append(os.path.join(BASE_DIR, '..'))
@@ -15,39 +13,29 @@ from core.config import settings
 from database import Country
 
 DATABASE_URL = settings.postgres_async_url
-
-COUNTRIES: List[str] = [
-    "Uzbekistan", "Kazakhstan", "Kyrgyzstan", "Turkey", "Russia", "China",
-    "Japan", "France", "Spain", "United States", "Italy", "Mexico",
-    "United Kingdom", "Germany", "Greece", "Thailand", "Austria", "United Arab Emirates",
-    "Saudi Arabia", "Portugal", "Malaysia", "Hong Kong", "Netherlands", "India",
-]
+FIXTURE_PATH = BASE_DIR / 'fixtures' / "countries.json"
 
 
-async def add_countries(names: List[str]):
-    engine = create_async_engine(DATABASE_URL, echo=False, future=True)
-    AsyncSessionLocal = sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)  # noqa
+async def add_countries():
+    with open(FIXTURE_PATH, "r", encoding="utf-8") as f:
+        data = json.load(f)
 
-    try:
-        async with AsyncSessionLocal() as session:
-            stmt = select(Country.name).where(Country.name.in_(names))
-            result = await session.execute(stmt)
-            existing = {row[0] for row in result.fetchall()}
+    stmt = select(Country.name).where(Country.name.in_([c["name"] for c in data]))
+    result = await db.execute(stmt)
+    existing = {row[0] for row in result.fetchall()}
 
-            new_countries = [name for name in names if name not in existing]
-            if new_countries:
-                for name in new_countries:
-                    session.add(Country(name=name))
-                await session.commit()
-            return len(new_countries), len(existing)
+    new_countries = [c for c in data if c["name"] not in existing]
+    if new_countries:
+        for c in new_countries:
+            db.add(Country(code=c["code"], name=c["name"]))
+        await db.commit()
 
-    finally:
-        await engine.dispose()
+    return len(new_countries), len(existing)
 
 
 def main():
     try:
-        new_count, existing_count = asyncio.run(add_countries(COUNTRIES))
+        new_count, existing_count = asyncio.run(add_countries())
         print(f"✅ {new_count} new countries added.")
         print(f"ℹ️  {existing_count} countries already existed in database.")
     except Exception as e:

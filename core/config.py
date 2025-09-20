@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from pydantic import Field
 from pydantic_settings import BaseSettings
 
@@ -27,17 +29,17 @@ class Settings(BaseSettings):
     DEEPSEEK_AI_API_TOKEN: str = Field()
 
     UNSPLASH_ACCESS_KEY : str = Field()
-    #
-    # @property
-    # def postgres_sync_url(self):
-    #     return f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DATABASE}"
+
+    @property
+    def postgres_sync_url(self):
+        return f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DATABASE}"
 
     @property
     def postgres_async_url(self):
         return f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DATABASE}"
 
     class Config:
-        env_file = '.env'
+        env_file = str(Path(__file__).resolve().parent.parent / ".env")
 
 
 settings = Settings()
