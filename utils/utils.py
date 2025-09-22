@@ -10,7 +10,9 @@ from database import User
 async def send_telegram_message(chat_id: int, text: str):
     url = f"https://api.telegram.org/bot{settings.TELEGRAM_BOT_TOKEN}/sendMessage"
     payload = {"chat_id": chat_id, "text": text}
-    response = httpx.post(url, data=payload)
+
+    async with httpx.AsyncClient() as client:
+        response = await client.post(url, data=payload)
     return response.json()
 
 
@@ -20,7 +22,7 @@ def generate_code() -> int:
 
 async def verification_send_telegram(chat_id: int, code: int):
     text = f"🔑 Your verification code is: {code}"
-    return await  send_telegram_message(chat_id, text)
+    return await send_telegram_message(chat_id, text)
 
 
 def get_travel_days(start: str, end: str) -> int:
