@@ -20,7 +20,7 @@ from utils.utils import get_travel_days
 trip_agents = APIRouter(tags=["tour"])
 
 
-@trip_agents.post("/trip", response_model=APIResponse)
+@trip_agents.post("/trips", response_model=APIResponse)
 async def create_tour(
         data: TripSchema,
         service: AIService = Depends(ai_service),
@@ -78,12 +78,12 @@ async def like_statistics(
     }
 
 
-@trip_agents.post("/trip/like")
+@trip_agents.post("/trips/like")
 async def like(is_like: bool, trip_id: UUID, current_user=Depends(get_current_user)):
     await TripLike.create_or_update(trip_id, current_user.id, is_like) # noqa
     await Trip.like_update(trip_id, is_like)
 
-@trip_agents.get("/trip", response_model=ResponseSchema[list[ReadTripSchema]])
+@trip_agents.get("/trips", response_model=ResponseSchema[list[ReadTripSchema]])
 async def get_tour():
     tours = await Trip.get_all()
     return ResponseSchema[list[ReadTripSchema]](
@@ -92,7 +92,7 @@ async def get_tour():
     )
 
 
-@trip_agents.get("/trip/{id}", response_model=ResponseSchema[ReadTripSchema])
+@trip_agents.get("/trips/{id}", response_model=ResponseSchema[ReadTripSchema])
 async def get_tour_id(id: UUID):
     trip = await Trip.get(id)
     if trip is None:
@@ -106,7 +106,7 @@ async def get_tour_id(id: UUID):
         message='Trip detail',
         data=trip)
 
-# @trip_agents.get("/trip", response_model=SearchTripSchema)
+# @trip_agents.get("/trips", response_model=SearchTripSchema)
 # async def filter_trip(
 #     days: int | None = None,
 

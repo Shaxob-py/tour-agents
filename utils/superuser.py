@@ -1,3 +1,4 @@
+import asyncio
 import os
 import sys
 from pathlib import Path
@@ -13,9 +14,8 @@ async def create_superuser():
     phone_number = input("Phone number: ")
     password = getpass("Password: ")
 
-    result = await User.get_by_phone_number(phone_number)
-    existing = result.scalar_one_or_none()
-    if existing:
+    user = await User.get_by_phone_number(phone_number)
+    if user:
         print("❌ User already exists")
         return
 
@@ -27,3 +27,7 @@ async def create_superuser():
         role=User.Role.ADMIN.name
     )
     print("✅ Superuser created!")
+
+
+if __name__ == '__main__':
+    asyncio.run(create_superuser())
