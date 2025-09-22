@@ -35,8 +35,8 @@ async def login_view(data: LoginSchema, service: OtpService = Depends(otp_servic
 
 
 @auth_router.post('/token', response_model=LoginSuccessSchema)
-async def login_view(phone: str = Body(), code: str = Body(), service: OtpService = Depends(otp_service)):
-    is_verified, user_data = service.verify_code_telegram(phone, code)
+async def token_view(phone: str = Body(), code: str = Body(), service: OtpService = Depends(otp_service)):
+    is_verified, user_data = await service.verify_code_telegram(phone, code)
 
     if is_verified:
         user = await User.get_by_phone_number(phone)
@@ -45,7 +45,7 @@ async def login_view(phone: str = Body(), code: str = Body(), service: OtpServic
             raise HTTPException(status_code=404, detail="User not found")
 
         token = create_access_token({"sub": str(user.id)})
-        refresh_token = create_refresh_token({"sub": str(user.id)}) # noqa
+        refresh_token = create_refresh_token({"sub": str(user.id)})  # noqa
 
         return {
             "access_token": token,
@@ -59,7 +59,7 @@ async def login_view(phone: str = Body(), code: str = Body(), service: OtpServic
 
 
 @auth_router.post('/refresh-token', response_model=LoginSuccessSchema)
-async def refresh_token(refresh_token: str): # noqa
+async def refresh_token(refresh_token: str):  # noqa
     user_uuid = verify_refresh_token(refresh_token)
     new_access_token = create_access_token({'sub': str(user_uuid)})
     return {
