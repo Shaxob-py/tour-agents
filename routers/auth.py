@@ -4,7 +4,7 @@ from fastapi.responses import ORJSONResponse
 from starlette import status
 
 from database import User
-from schemas.base_schema import LoginSchema, LoginSuccessSchema, RefreshTokenSchema
+from schemas.base_schema import LoginSchema, LoginSuccessSchema, RefreshTokenSchema, TokenSchema
 from services.otp_services import OtpService
 from utils.security import create_access_token, create_refresh_token, verify_refresh_token
 from utils.utils import generate_code
@@ -35,11 +35,11 @@ async def login_view(data: LoginSchema, service: OtpService = Depends(otp_servic
 
 
 @auth_router.post('/token', response_model=LoginSuccessSchema)
-async def login_view(phone: str = Body(), code: str = Body(), service: OtpService = Depends(otp_service)):
-    is_verified, user_data = service.verify_code_telegram(phone, code)
+async def login_view(data:TokenSchema, service: OtpService = Depends(otp_service)):
+    is_verified, user_data = service.verify_code_telegram(data.phone, data.code)
 
     if is_verified:
-        user = await User.get_by_phone_number(phone)
+        user = await User.get_by_phone_number(data.phone)
 
         if not user:
             raise HTTPException(status_code=404, detail="User not found")

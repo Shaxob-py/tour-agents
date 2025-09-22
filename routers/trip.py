@@ -109,22 +109,5 @@ async def get_tour_id(id: UUID):
 # @trip_agents.get("/trip", response_model=SearchTripSchema)
 # async def filter_trip(
 #     days: int | None = None,
-#     destination: str | None = None,
-#     start_date: str | None = None,
-#     end_date: str | None = None,
-#
-# ):
-#     conditions = []
-#
-#     if days:
-#         conditions.append(f"days == {days}")
-#     if destination:
-#         conditions.append(f"destination ILIKE %{destination}%")
-#     if start_date:
-#         conditions.append(f"start_date == {start_date}")
-#     if end_date:
-#         conditions.append(f"end_date == {end_date}")
-#
-#     return ORJSONResponse({
-#         "data": conditions
-#     })
+
+

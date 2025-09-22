@@ -82,3 +82,8 @@ class RefreshTokenSchema(BaseModel):
     refresh_token: str
 
 
+class TokenSchema(BaseModel):
+    phone: str = Field(..., min_length=1, examples=['991234567'])
+    code : str
+
+
