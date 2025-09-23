@@ -22,12 +22,11 @@ async def create_superuser():
     await User.create(
         phone_number=phone_number,
         username="superuser",
-        telegram_id=98765432,
+        telegram_id=543451,
         password=User.get_password_hash(password),
         role=User.Role.ADMIN.name
     )
     print("✅ Superuser created!")
-
 
 
 if __name__ == '__main__':

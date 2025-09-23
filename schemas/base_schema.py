@@ -42,7 +42,7 @@ class ImageSchema(BaseModel):
 
 
 class ReadTripSchema(BaseModel):
-    id : UUID = Field(...)
+    id: UUID = Field(...)
     away_from: str
     destination: str
     description: str
@@ -88,6 +88,4 @@ class RefreshTokenSchema(BaseModel):
 
 class TokenSchema(BaseModel):
     phone: str = Field(..., min_length=1, examples=['991234567'])
-    code : str
-
-
+    code: str
