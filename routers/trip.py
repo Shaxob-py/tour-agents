@@ -17,6 +17,7 @@ from schemas.base_schema import TripSchema, ResponseSchema, ReadTripSchema, APIR
 from services.ai_servise import AIService, ai_service
 from utils.security import get_current_user
 from utils.utils import get_travel_days
+from sqlalchemy.orm import selectinload
 
 trip_agents = APIRouter(tags=["tour"])
 
@@ -86,6 +87,8 @@ async def like(data: TripLikeRequest, current_user=Depends(get_current_user)):
     return {"status": "ok"}
 
 
+
+
 @trip_agents.get("/trips", response_model=APIResponse)
 async def list_trips(
     session: AsyncSession = Depends(get_session),
@@ -96,7 +99,13 @@ async def list_trips(
     skip: int = Query(0, ge=0),
     limit: int = Query(10, ge=1, le=100),
 ):
-    query = select(Trip)
+    query = (
+        select(Trip)
+        .options(
+            selectinload(Trip.created_by),
+            selectinload(Trip.images)
+        )
+    )
 
     if search:
         query = query.filter(
@@ -110,19 +119,21 @@ async def list_trips(
     if end_date:
         query = query.filter(Trip.end_date <= end_date)
 
+    total_count = await session.scalar(
+        select(func.count()).select_from(query.subquery())
+    )
 
-    total_count = await session.scalar(select(func.count()).select_from(query.subquery()))
-
-    # pagination
     query = query.offset(skip).limit(limit)
-
     result = await session.execute(query)
-    trips = result.scalars().all()
+    trips = result.scalars().unique().all()
 
-    return ORJSONResponse({
-        "count": total_count,
-        "items": [trip.to_dict() for trip in trips]
-    })
+    return APIResponse(
+        message="Trips retrieved successfully",
+        data={
+            "count": total_count,
+            "items": [ReadTripSchema.model_validate(trip, from_attributes=True) for trip in trips]  # 👈
+        }
+    )
 
 
 @trip_agents.get("/trips/{id}", response_model=ResponseSchema[ReadTripSchema])
