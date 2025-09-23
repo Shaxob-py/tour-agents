@@ -12,7 +12,7 @@ from starlette import status
 from core.config import settings
 from database import User
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 
 http_bearer = HTTPBearer()
 

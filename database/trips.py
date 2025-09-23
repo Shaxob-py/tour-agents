@@ -27,8 +27,8 @@ class Trip(CreatedModel):
     images: Mapped[list["TripImage"]] = relationship("TripImage", back_populates="trip", cascade="all, delete-orphan")
     likes: Mapped[list["TripLike"]] = relationship("TripLike", back_populates="trip", cascade="all, delete-orphan")
 
-    likes_count: Mapped[int] = mapped_column(Integer, server_default="0")
-    dislikes_count: Mapped[int] = mapped_column(Integer, server_default="0")
+    likes_count: Mapped[int] = mapped_column(Integer, server_default="0", default=0)
+    dislikes_count: Mapped[int] = mapped_column(Integer, server_default="0", default=0)
 
     # 🔹 API ga mos keladigan query helper
     @classmethod
