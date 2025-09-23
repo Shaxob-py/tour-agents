@@ -30,7 +30,6 @@ class Trip(CreatedModel):
     likes_count: Mapped[int] = mapped_column(Integer, server_default="0", default=0)
     dislikes_count: Mapped[int] = mapped_column(Integer, server_default="0", default=0)
 
-    # 🔹 API ga mos keladigan query helper
     @classmethod
     async def get_all(cls, search=None, destination=None, start_date=None, end_date=None, skip=0, limit=10):
         query = select(cls).options(
@@ -38,7 +37,7 @@ class Trip(CreatedModel):
             selectinload(cls.images)
         )
 
-        if search:
+        if search: # noqa
             query = query.filter(
                 (cls.destination.ilike(f"%{search}%")) |
                 (cls.description.ilike(f"%{search}%"))
@@ -72,7 +71,7 @@ class Trip(CreatedModel):
         query = (
             update(cls)
             .where(cls.id == id_)
-            .values(view_count=cls.view_count + 1)  # ✅ increment
+            .values(view_count=cls.view_count + 1)
         )
         await db.execute(query)
         await db.commit()
@@ -101,7 +100,7 @@ class TripLike(Model):
     user_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"))
     is_like: Mapped[bool] = mapped_column(Boolean, nullable=True)
 
-    user: Mapped["User"] = relationship("User")
+    user: Mapped["User"] = relationship("User") # noqa
 
     @classmethod
     async def update_like(cls, trip_id: UUID, user_id: UUID, is_like: bool):

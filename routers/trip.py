@@ -107,7 +107,7 @@ async def list_trips(
         )
     )
 
-    if search:
+    if search: # noqa
         query = query.filter(
             (Trip.destination.ilike(f"%{search}%")) |
             (Trip.description.ilike(f"%{search}%"))
@@ -137,7 +137,7 @@ async def list_trips(
 
 
 @trip_agents.get("/trips/{id}", response_model=ResponseSchema[ReadTripSchema])
-async def get_tour_id(id: UUID):
+async def get_tour_id(id: UUID): # noqa
     trip = await Trip.get(id)
     if trip is None:
         return ORJSONResponse(
