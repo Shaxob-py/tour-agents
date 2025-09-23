@@ -17,7 +17,7 @@ from database import Country, User, Trip
 from database.countries import City
 
 fake = Faker()
-pwd_ctx = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_ctx = CryptContext(schemes=["argon2"], deprecated="auto")
 FIXTURE_PATH = BASE_DIR / "utils" / "fixtures" / "countries.json"
 
 

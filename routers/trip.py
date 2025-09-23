@@ -131,7 +131,7 @@ async def list_trips(
         message="Trips retrieved successfully",
         data={
             "count": total_count,
-            "items": [ReadTripSchema.model_validate(trip, from_attributes=True) for trip in trips]  # 👈
+            "items": [ReadTripSchema.model_validate(trip, from_attributes=True) for trip in trips]
         }
     )
 
