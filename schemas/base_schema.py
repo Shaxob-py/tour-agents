@@ -50,7 +50,7 @@ class ReadTripSchema(BaseModel):
     end_date: date
     view_count: int
     created_at: datetime | None = None
-    update_at: datetime | None = None
+    updated_at: datetime | None = None
     created_by: UserSchema
     images: list[ImageSchema]
     likes_count: int
@@ -71,10 +71,10 @@ class APIResponse(BaseModel):
 
 
 class SearchTripSchema(BaseModel):
-    days: int | None = None,
-    destination: str | None = None,
-    start_date: date | None = None,
-    end_date: date | None = None
+    days: Optional[int] = None
+    destination: Optional[str] = None
+    start_date: Optional[date] = None
+    end_date: Optional[date] = None
 
 
 class TripLikeRequest(BaseModel):
