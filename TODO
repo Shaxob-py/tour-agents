@@ -30,8 +30,8 @@ task
     "data": []
 }
 
-2. sariqlarni yoqotish
-3. fake data toldirish
+2. sariqlarni yoqotish✅
+3. fake data toldirish✅
 4. print test code
 5. adminka qoshish
     create_superuser.py +
@@ -42,10 +42,10 @@ task
     Users
     Admins
 
-7. trips apida filter, search, pagination
+7. trips apida filter, search, pagination✅
 
 
-8. /api/v1/trip/like body ga otkazish
+8. /api/v1/trip/like body ga otkazish✅
 
 9.
 

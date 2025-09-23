@@ -60,7 +60,7 @@ async def login_view(data:TokenSchema, service: OtpService = Depends(otp_service
 
 @auth_router.post('/refresh-token', response_model=LoginSuccessSchema)
 async def refresh_token(payload: RefreshTokenSchema): # noqa
-    user_uuid = verify_refresh_token(refresh_token)
+    user_uuid = verify_refresh_token(refresh_token) # noqa
     new_access_token = create_access_token({'sub': str(user_uuid)})
     return {
         "access_token": new_access_token,

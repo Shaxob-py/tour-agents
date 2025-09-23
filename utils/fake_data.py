@@ -47,7 +47,7 @@ async def seed_cities():
 
     for country in countries:
         for _ in range(2):
-            city_name = fake.unique.city()  # unique nom olamiz
+            city_name = fake.unique.city()
             exists = await db.execute(select(City).where(City.name == city_name))
             if not exists.scalars().first():
                 db.add(City(name=city_name, country_id=country.id))
@@ -79,8 +79,8 @@ async def seed_trips(n=20):
             destination=random.choice(countries).name,
             days=(end - start).days + 1,
             description=fake.paragraph(),
-            start_date=start,
-            end_date=end,
+            start_date=start, # noqa
+            end_date=end, # noqa
             user_id=random.choice(users).id
         ))
     await db.commit()

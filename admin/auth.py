@@ -7,7 +7,7 @@ from starlette_admin.exceptions import LoginFailed
 from database.users import User
 from utils.utils import normalize_phone
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 
 
 
