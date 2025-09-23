@@ -29,5 +29,10 @@ async def create_superuser():
     print("✅ Superuser created!")
 
 
+if __name__ == "__main__":
+    import asyncio
+    asyncio.run(create_superuser())
+
+
 if __name__ == '__main__':
     asyncio.run(create_superuser())

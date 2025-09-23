@@ -77,6 +77,10 @@ class SearchTripSchema(BaseModel):
     end_date: date | None = None
 
 
+class TripLikeRequest(BaseModel):
+    trip_id: UUID
+    is_like: bool
+
 
 class RefreshTokenSchema(BaseModel):
     refresh_token: str

@@ -27,4 +27,4 @@ country_script:
 	python3 utils/country_script.py
 
 createsuperuser:
-	python3 utils/superuser.py
+	python3  utils/superuser.py
