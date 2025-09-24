@@ -46,7 +46,7 @@ class Trip(CreatedModel):
             .where(cls.id == id_)
             .options(
                 selectinload(cls.created_by),
-                selectinload(cls.images)
+                selectinload(cls.images),
             )
         )
         return (await db.execute(query)).scalar_one_or_none()

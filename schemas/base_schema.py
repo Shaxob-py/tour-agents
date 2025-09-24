@@ -41,17 +41,16 @@ class ImageSchema(BaseModel):
         from_attributes = True
 
 
-
 class ReadTripSchema(BaseModel):
-    id : UUID = Field(...)
+    id: UUID = Field(...)
     away_from: str
     destination: str
-    description: str
+    description: str | None = None
     start_date: date
     end_date: date
     view_count: int
-    created_at: datetime | None = None
-    updated_at: datetime | None = None
+    created_at: datetime
+    # updated_at: datetime | None = None # TODO teacher
     created_by: UserSchema
     images: list[ImageSchema]
     likes_count: int
@@ -59,8 +58,6 @@ class ReadTripSchema(BaseModel):
 
     class Config:
         from_attributes = True
-
-
 
 
 class LoginSuccessSchema(BaseModel):

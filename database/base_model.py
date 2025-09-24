@@ -4,11 +4,8 @@ from datetime import datetime
 from sqlalchemy import DateTime, func, update as sqlalchemy_update, select, delete as sqlalchemy_delete, text, or_, \
     String
 from sqlalchemy.dialects.postgresql.base import UUID
-from sqlalchemy.ext.asyncio import AsyncAttrs, create_async_engine, async_sessionmaker
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, declared_attr, selectinload
-from sqlalchemy.orm import class_mapper
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.asyncio import AsyncSession, AsyncAttrs, create_async_engine, async_sessionmaker
+from sqlalchemy.orm import sessionmaker, class_mapper, DeclarativeBase, Mapped, mapped_column, declared_attr, selectinload
 
 from core.config import settings
 
@@ -55,6 +52,7 @@ class Database:
     def engine(self):
         return self._engine
 
+
 db = Database()
 db.init()
 
@@ -70,7 +68,7 @@ class AbstractClass:
 
     @classmethod
     async def create(cls, **kwargs):  # Create
-        object_ = cls(**kwargs) # noqa
+        object_ = cls(**kwargs)  # noqa
         db.add(object_)
         await cls.commit()
         return object_
@@ -79,7 +77,7 @@ class AbstractClass:
     async def update(cls, id_, **kwargs):
         query = (
             sqlalchemy_update(cls)
-            .where(cls.id == id_) # noqa
+            .where(cls.id == id_)  # noqa
             .values(**kwargs)
             .execution_options(synchronize_session="fetch")
             .returning(cls)
@@ -90,12 +88,12 @@ class AbstractClass:
 
     @classmethod
     async def get(cls, id_):
-        query = select(cls).where(cls.id == id_) # noqa
+        query = select(cls).where(cls.id == id_)  # noqa
         return (await db.execute(query)).scalar()
 
     @classmethod
     async def delete(cls, id_):
-        query = sqlalchemy_delete(cls).where(cls.id == id_) # noqa
+        query = sqlalchemy_delete(cls).where(cls.id == id_)  # noqa
         await db.execute(query)
         await cls.commit()
 
@@ -111,10 +109,10 @@ class AbstractClass:
 
         return (await db.execute(query)).scalars().all()
 
-    async def search(cls, keyword: str): # noqa
+    async def search(cls, keyword: str):  # noqa
         string_columns = [
             prop.columns[0]
-            for prop in class_mapper(cls).iterate_properties # noqa
+            for prop in class_mapper(cls).iterate_properties  # noqa
             if hasattr(prop, "columns") and isinstance(prop.columns[0].type, String)
         ]
 
@@ -140,12 +138,14 @@ class Model(Base, AbstractClass):
 
 class CreatedModel(Model):
     __abstract__ = True
-    updated_at: Mapped[datetime] = mapped_column(DateTime, server_onupdate=func.now(), nullable=True)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), onupdate=func.now())
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
 
 
+# TODO
 async def get_session():
-    yield db._session # noqa
+    yield db._session  # noqa
+
 
 async_session_maker = sessionmaker(
     db.engine,
