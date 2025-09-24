@@ -18,13 +18,11 @@ def otp_service():
 @auth_router.post('/login')
 async def login_view(data: LoginSchema, service: OtpService = Depends(otp_service)):
     user = await User.get_by_phone_number(data.phone)
-
     if not user:
         return ORJSONResponse(
             {"message": "Siz bot orqali ro'yxatdan o'tmagansiz. Iltimos, botdan ro'yxatdan o'ting."},
             status_code=status.HTTP_401_UNAUTHORIZED
         )
-
     code = generate_code()
     await service.send_otp_by_telegram(user, code)
 
