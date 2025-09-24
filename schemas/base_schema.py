@@ -71,12 +71,6 @@ class LoginSuccessSchema(BaseModel):
     refresh_token: str
 
 
-class SearchTripSchema(BaseModel):
-    days: Optional[int] = None
-    destination: Optional[str] = None
-    start_date: Optional[date] = None
-    end_date: Optional[date] = None
-
 
 class TripLikeRequest(BaseModel):
     trip_id: UUID
