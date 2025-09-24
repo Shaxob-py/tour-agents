@@ -2,13 +2,14 @@ from datetime import datetime, date
 from typing import Optional
 from uuid import UUID
 
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Query, HTTPException
 from fastapi.params import Depends
 from fastapi.responses import ORJSONResponse
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 from starlette import status
+from starlette.status import HTTP_500_INTERNAL_SERVER_ERROR
 
 from const import TOUR_PROMPT
 from database import Trip
@@ -16,6 +17,7 @@ from database.base_model import get_session
 from database.trips import TripLike, TripImage
 from schemas.base_schema import TripSchema, ResponseSchema, ReadTripSchema, APIResponse, TripLikeRequest
 from services.ai_servise import AIService, ai_service
+from services.trip_service import TripService
 from utils.security import get_current_user
 from utils.utils import get_travel_days
 
@@ -62,17 +64,32 @@ async def create_tour(
 
 
 
-@trip_agents.get("/trip", response_model=ResponseSchema[list[ReadTripSchema]])
-async def get_tour():
-    tours = await Trip.get_all()
-    return ResponseSchema[list[ReadTripSchema]](
-        message='All Tours',
-        data=tours,
-    )
+@trip_agents.get("/trips", response_model=APIResponse)
+async def list_trips(
+    session: AsyncSession = Depends(get_session),
+    search: Optional[str] = Query(None, description="Qidiruv (destination/description)"),
+    destination: Optional[str] = Query(None, description="Manzil filter"),
+    start_date: Optional[date] = Query(None, description="Boshlanish sanasi"),
+    end_date: Optional[date] = Query(None, description="Tugash sanasi"),
+    skip: int = Query(0, ge=0, description="Qaysidan boshlab olish"),
+    limit: int = Query(10, ge=1, le=100, description="Nechta olish"),
+):
 
+    try:
+        data = await TripService.list_trips(
+            session=session,
+            search=search,
+            destination=destination,
+            start_date=start_date,
+            end_date=end_date,
+            skip=skip,
+            limit=limit,
+        )
+        return APIResponse(message="Trips retrieved successfully", data=data)
+    except Exception as e:
+        raise HTTPException(status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
-
-@trip_agents.post("/trip/like")
+@trip_agents.post("/trips/like")
 async def like_trip(data: TripLikeRequest, current_user=Depends(get_current_user)):
     await TripLike.create_or_update(data.trip_id, current_user.id, data.is_like)
     await Trip.like_update(data.trip_id, data.is_like)
