@@ -1,18 +1,39 @@
 from starlette_admin.contrib.sqla import ModelView
-from starlette_admin.fields import StringField, EnumField
-
-from database.users import User
 
 
-class UserAdmin(ModelView):
+class UserModelView(ModelView):
     fields = [
         "id",
-        StringField("username", label="Username"),
-        StringField("phone_number", label="Phone"),
-        StringField("telegram_id", label="Telegram ID"),
-        EnumField("role", enum=User.Role, label="Role"),
+        "username",
+        "phone_number",  # TODO phone number chiroyli chiqishi kk
+        "telegram_id",
+        "role",
+        # StringField("username", label="Username", help_text="togri yoz", ),
+        # StringField("phone_number", label="Phone"),
+        # IntegerField("telegram_id", label="Telegram ID"),
+        # EnumField("role", enum=User.Role, label="Role"),
     ]
 
+    label = 'Userlar'
+    identity = 'Userlar'
     exclude_fields_from_list = ["password"]
     searchable_fields = ["username", "phone_number"]
-    sortable_fields = ["id", "username", "role"]
+    # TODO faqat userlar chiqsin filter qoshish kk
+
+
+class AdminModelView(ModelView):
+    fields = [
+        "id",
+        "username",
+        "phone_number",
+        "telegram_id",
+        "role",
+        # StringField("username", label="Username", help_text="togri yoz", ),
+        # StringField("phone_number", label="Phone"),
+        # IntegerField("telegram_id", label="Telegram ID"),
+        # EnumField("role", enum=User.Role, label="Role"),
+    ]
+    label = 'Adminlar'
+    identity = 'Adminlar'
+    exclude_fields_from_list = ["password"]
+    searchable_fields = ["username", "phone_number"]

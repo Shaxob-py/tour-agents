@@ -36,18 +36,20 @@ task
 5. adminka qoshish
     create_superuser.py +
     adminka auth +
-    csv|xlsx userlarni olish -
+    csv|xlsx userlarni olish - (username, phone, telegram_id)
 
 6. adminkaga chiqarish
     Users
     Admins
+6.1 adminkada (users)
+    phone -> chiroyli formatda kiritilishi
 
 7. trips apida filter, search, pagination✅
 
 
 8. /api/v1/trip/like body ga otkazish✅
 
-9.
+9. isort, flake8
 
 
 

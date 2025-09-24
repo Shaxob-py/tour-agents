@@ -60,5 +60,5 @@ class TripService:
             "count": total_count or 0,
             "skip": skip,
             "limit": limit,
-            "items": [ReadTripSchema.model_validate(trip) for trip in trips],
+            "data": trips
         }

@@ -1,5 +1,5 @@
 from datetime import datetime, date
-from typing import Generic, TypeVar, Optional, Any
+from typing import Generic, TypeVar, Optional
 from uuid import UUID
 
 from pydantic import BaseModel, Field
@@ -10,6 +10,12 @@ T = TypeVar('T', bound=BaseModel)
 class ResponseSchema(BaseModel, Generic[T]):
     message: str
     data: T | None = None
+
+
+class ListResponseSchema(ResponseSchema[list[T]]):
+    count: int
+    skip: int
+    limit: int
 
 
 class ChatAiSchema(BaseModel):
@@ -50,7 +56,7 @@ class ReadTripSchema(BaseModel):
     end_date: date
     view_count: int
     created_at: datetime
-    # updated_at: datetime | None = None # TODO teacher
+    updated_at: datetime
     created_by: UserSchema
     images: list[ImageSchema]
     likes_count: int
@@ -63,11 +69,6 @@ class ReadTripSchema(BaseModel):
 class LoginSuccessSchema(BaseModel):
     access_token: str
     refresh_token: str
-
-
-class APIResponse(BaseModel):
-    message: str
-    data: Optional[Any] = None
 
 
 class SearchTripSchema(BaseModel):

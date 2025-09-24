@@ -15,7 +15,7 @@ from const import TOUR_PROMPT
 from database import Trip
 from database.base_model import get_session
 from database.trips import TripLike, TripImage
-from schemas.base_schema import TripSchema, ResponseSchema, ReadTripSchema, APIResponse, TripLikeRequest
+from schemas.base_schema import TripSchema, ResponseSchema, ReadTripSchema, TripLikeRequest, ListResponseSchema
 from services.ai_servise import AIService, ai_service
 from services.trip_service import TripService
 from utils.security import get_current_user
@@ -24,7 +24,7 @@ from utils.utils import get_travel_days
 trip_agents = APIRouter(tags=["trip"])
 
 
-@trip_agents.post("/trips", response_model=APIResponse)
+@trip_agents.post("/trips")
 async def create_tour(
         data: TripSchema,
         service: AIService = Depends(ai_service),
@@ -61,22 +61,18 @@ async def create_tour(
     # return {"message": "Success", "trip_id": str(trip_id), "is_like": is_like}
 
 
-
-
-
-@trip_agents.get("/trips", response_model=APIResponse)
+@trip_agents.get("/trips", response_model=ListResponseSchema[ReadTripSchema])
 async def list_trips(
-    session: AsyncSession = Depends(get_session),
-    search: Optional[str] = Query(None, description="Qidiruv (destination/description)"),
-    destination: Optional[str] = Query(None, description="Manzil filter"),
-    start_date: Optional[date] = Query(None, description="Boshlanish sanasi"),
-    end_date: Optional[date] = Query(None, description="Tugash sanasi"),
-    skip: int = Query(0, ge=0, description="Qaysidan boshlab olish"),
-    limit: int = Query(10, ge=1, le=100, description="Nechta olish"),
+        session: AsyncSession = Depends(get_session),
+        search: Optional[str] = Query(None, description="Qidiruv (destination/description)"),
+        destination: Optional[str] = Query(None, description="Manzil filter"),
+        start_date: Optional[date] = Query(None, description="Boshlanish sanasi"),
+        end_date: Optional[date] = Query(None, description="Tugash sanasi"),
+        skip: int = Query(0, ge=0, description="Qaysidan boshlab olish"),
+        limit: int = Query(10, ge=1, le=100, description="Nechta olish"),
 ):
-
     try:
-        data = await TripService.list_trips(
+        trip_list_paginated = await TripService.list_trips(
             session=session,
             search=search,
             destination=destination,
@@ -85,9 +81,13 @@ async def list_trips(
             skip=skip,
             limit=limit,
         )
-        return APIResponse(message="Trips retrieved successfully", data=data)
+        return {
+            "message": "Trip list",
+            **trip_list_paginated
+        }
     except Exception as e:
         raise HTTPException(status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
 
 @trip_agents.post("/trips/like")
 async def like_trip(data: TripLikeRequest, current_user=Depends(get_current_user)):
@@ -107,4 +107,5 @@ async def get_tour_id(id: UUID):  # noqa
 
     return ResponseSchema[ReadTripSchema](
         message='Trip detail',
-        data=trip)
+        data=trip
+    )

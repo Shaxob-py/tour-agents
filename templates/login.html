@@ -4,11 +4,11 @@
 {% block content %}
 <div class="container-tight py-5">
     {% if login_logo_url or logo_url %}
-        <div class="text-center mb-4">
-            <a href="." class="navbar-brand navbar-brand-autodark">
-                <img src="{{ login_logo_url or logo_url }}" height="50" alt="Logo"/>
-            </a>
-        </div>
+    <div class="text-center mb-4">
+        <a href="." class="navbar-brand navbar-brand-autodark">
+            <img src="{{ login_logo_url or logo_url }}" height="50" alt="Logo"/>
+        </a>
+    </div>
     {% endif %}
 
     <form class="card shadow-lg border-0 rounded-3" action="{{ request.url }}" method="POST">
@@ -16,10 +16,10 @@
             <h2 class="card-title text-center mb-4 fw-bold">Trip agent ✈</h2>
 
             {% if error %}
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <i class="ti ti-alert-circle me-2"></i> {{ error }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
-                </div>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="ti ti-alert-circle me-2"></i> {{ error }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+            </div>
             {% endif %}
 
             <!-- Phone Number -->
@@ -29,12 +29,11 @@
                        name="username"
                        id="phone"
                        class="form-control {% if form_errors and form_errors.has('phone_number') %}is-invalid{% endif %}"
-                       placeholder="+998 (90) 123-45-67"
                        autocomplete="tel"
                        inputmode="tel"
-                       pattern="^\+998 \(\d{2}\) \d{3}-\d{2}-\d{2}$" />
+                />
                 {% if form_errors and form_errors.has('phone_number') %}
-                    <div class="invalid-feedback">{{ form_errors.msg('phone_number') }}</div>
+                <div class="invalid-feedback">{{ form_errors.msg('phone_number') }}</div>
                 {% endif %}
             </div>
 
@@ -47,7 +46,7 @@
                        placeholder="********"
                        autocomplete="current-password"/>
                 {% if form_errors and form_errors.has('password') %}
-                    <div class="invalid-feedback">{{ form_errors.msg('password') }}</div>
+                <div class="invalid-feedback">{{ form_errors.msg('password') }}</div>
                 {% endif %}
             </div>
 
@@ -67,51 +66,42 @@
     </form>
 </div>
 
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.6/jquery.inputmask.min.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const phoneInput = document.getElementById('phone');
-
-    phoneInput.addEventListener('input', function(e) {
-        let value = e.target.value.replace(/\D/g, ''); // Only numbers
-
-        // Remove +998 prefix if user types it
-        if (value.startsWith('998')) {
-            value = value.slice(3);
-        }
-
-        // Limit to 9 digits after +998
-        if (value.length > 9) {
-            value = value.slice(0, 9);
-        }
-
-        // Format: +998 (XX) XXX-XX-XX
-        let formatted = '+998 ';
-
-        if (value.length > 0) {
-            formatted += '(' + value.substring(0, Math.min(2, value.length));
-        }
-        if (value.length >= 2) {
-            formatted += ') ';
-            if (value.length > 2) {
-                formatted += value.substring(2, Math.min(5, value.length));
-            }
-        }
-        if (value.length >= 5) {
-            formatted += '-' + value.substring(5, Math.min(7, value.length));
-        }
-        if (value.length >= 7) {
-            formatted += '-' + value.substring(7, 9);
-        }
-
-        e.target.value = formatted;
+    jQuery(document).ready(function ($) {
+        // Apply input mask for the phone number input field
+        $('#phone').inputmask({
+            "mask": "+\\9\\98(99) 999-99-99"
+        });
     });
 
-    // Handle paste events
-    phoneInput.addEventListener('paste', function(e) {
-        setTimeout(() => {
-            phoneInput.dispatchEvent(new Event('input'));
-        }, 0);
+    $(document).ready(function () {
+        // Handle form submission
+        $('form').submit(function (event) {
+            // Prevent the form from submitting
+            event.preventDefault();
+
+            // Get the phone number input value
+            var phoneInput = $('#phone').val();
+
+            // Modify the input value to remove the country code and any non-digit characters
+            var modifiedPhoneInput = phoneInput.replace(/^\+|\D/g, '');
+
+            // Set the modified value back to the input field
+            var newInput = $('<input>').attr({
+                type: 'hidden',
+                name: 'username',
+                value: modifiedPhoneInput
+            });
+            // Append the new input element to the form
+            $(this).append(newInput);
+            // Now unbind the submit event handler and submit the form
+            $(this).unbind('submit').submit();
+        });
     });
-});
+
+
 </script>
 {% endblock %}
