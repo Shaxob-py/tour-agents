@@ -41,8 +41,9 @@ class ImageSchema(BaseModel):
         from_attributes = True
 
 
+
 class ReadTripSchema(BaseModel):
-    id: UUID = Field(...)
+    id : UUID = Field(...)
     away_from: str
     destination: str
     description: str
@@ -58,6 +59,8 @@ class ReadTripSchema(BaseModel):
 
     class Config:
         from_attributes = True
+
+
 
 
 class LoginSuccessSchema(BaseModel):
