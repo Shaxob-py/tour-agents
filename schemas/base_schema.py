@@ -1,5 +1,5 @@
 from datetime import datetime, date
-from typing import Generic, TypeVar, Optional
+from typing import Generic, TypeVar
 from uuid import UUID
 
 from pydantic import BaseModel, Field
@@ -69,7 +69,6 @@ class ReadTripSchema(BaseModel):
 class LoginSuccessSchema(BaseModel):
     access_token: str
     refresh_token: str
-
 
 
 class TripLikeRequest(BaseModel):

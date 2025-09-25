@@ -5,7 +5,6 @@ from typing import Optional
 from datetime import date
 
 from database.trips import Trip
-from schemas.base_schema import ReadTripSchema
 
 
 class TripService:

@@ -5,12 +5,11 @@ import sys
 from pathlib import Path
 from sqlalchemy import select
 from database.base_model import db
+from core.config import settings
+from database import Country
 
 BASE_DIR = Path(__file__).resolve().parent
 sys.path.append(os.path.join(BASE_DIR, '..'))
-
-from core.config import settings
-from database import Country
 
 DATABASE_URL = settings.postgres_async_url
 FIXTURE_PATH = BASE_DIR / 'fixtures' / "countries.json"

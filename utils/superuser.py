@@ -2,12 +2,10 @@ import asyncio
 import os
 import sys
 from pathlib import Path
-
+from getpass import getpass
+from database.users import User
 BASE_DIR = Path(__file__).resolve().parent
 sys.path.append(os.path.join(BASE_DIR, '..'))
-from getpass import getpass
-
-from database.users import User
 
 
 async def create_superuser():

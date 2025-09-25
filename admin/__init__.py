@@ -1,5 +1,4 @@
-from starlette_admin.contrib.sqla import Admin, ModelView
-
+from starlette_admin.contrib.sqla import Admin
 from admin.auth import UsernameAndPasswordProvider
 from admin.trips import TripModelView
 from admin.user import UserModelView, AdminModelView

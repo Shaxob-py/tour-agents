@@ -21,7 +21,8 @@ class AIService:
             "model": settings.DEEPSEEK_AI_MODEL,
             "messages": [
                 {"role": "system",
-                 "content": "You are a helpful AI tour agent and you should speak in Uzbek language and your word  should not 250 example "
+                 "content": "You are a helpful AI tour agent and you should speak in Uzbek language and your word"
+                            "  should not 250 example "
                             "1: Samarkand "
                             "2: Buxara "
                             "price 200 $ that is all"},
@@ -59,8 +60,6 @@ class AIService:
                 return None
 
             image_url = results[0]["urls"]["regular"]
-
-
             img_resp = await client.get(image_url)
             if img_resp.status_code != status.HTTP_200_OK:
                 print("Image download failed:", img_resp.status_code)

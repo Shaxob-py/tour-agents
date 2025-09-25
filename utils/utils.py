@@ -44,5 +44,3 @@ async def check_user(phone_number: str, username: str, telegram_id: int):
 
 def normalize_phone(raw: str) -> str:
     return ''.join(c for c in raw if c.isdigit())
-
-

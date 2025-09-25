@@ -4,17 +4,15 @@ import json
 import random
 from pathlib import Path
 from datetime import timedelta, date
-
 from faker import Faker
 from passlib.context import CryptContext
 from sqlalchemy import select
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-sys.path.append(str(BASE_DIR))
-
 from database.base_model import db
 from database import Country, User, Trip
 from database.countries import City
+BASE_DIR = Path(__file__).resolve().parent.parent
+sys.path.append(str(BASE_DIR))
+
 
 fake = Faker()
 pwd_ctx = CryptContext(schemes=["argon2"], deprecated="auto")
@@ -38,7 +36,7 @@ async def seed_countries():
             db.add(Country(name=c["name"], code=c["code"]))
 
     await db.commit()
-    print(f"✅ Countries seeded (unique only)")
+    print("✅ Countries seeded (unique only)")
 
 
 async def seed_cities():

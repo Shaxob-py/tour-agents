@@ -24,8 +24,6 @@ async def lifespan(_app: FastAPI):
     yield
     print('project toxtadi')
 
-
-
 app = FastAPI(
     docs_url='/',
     title="Tour Agency API",
@@ -59,6 +57,8 @@ app.add_middleware(
 )
 
 app.add_middleware(SessionMiddleware, secret_key="supersecretkey")
+
+
 def custom_openapi():
     if app.openapi_schema:
         return app.openapi_schema
