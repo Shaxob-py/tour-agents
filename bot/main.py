@@ -47,7 +47,7 @@ async def handle_language(message: Message) -> None:
 
 
 @dp.message(F.text.in_(["English 🇺🇸", "Uzbek 🇺🇿"]))
-async def handle_language(message: Message, state: FSMContext) -> None:
+async def handler_language(message: Message, state: FSMContext) -> None:
     map_lang = {
         "English 🇺🇸": "en",
         "Uzbek 🇺🇿": "uz",

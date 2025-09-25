@@ -1,16 +1,12 @@
 from datetime import datetime, date
 from typing import Optional
 from uuid import UUID
-
 from fastapi import APIRouter, Query, HTTPException
 from fastapi.params import Depends
 from fastapi.responses import ORJSONResponse
-from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
 from starlette import status
 from starlette.status import HTTP_500_INTERNAL_SERVER_ERROR
-
 from const import TOUR_PROMPT
 from database import Trip
 from database.base_model import get_session
@@ -107,5 +103,4 @@ async def get_tour_id(id: UUID):  # noqa
 
     return ResponseSchema[ReadTripSchema](
         message='Trip detail',
-        data=trip
-    )
+        data=trip)
