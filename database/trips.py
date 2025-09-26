@@ -6,7 +6,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import mapped_column, relationship, Mapped
 from sqlalchemy.orm import selectinload
 
-from database import Model
+from database import Model, User
 from database.base_model import db, CreatedModel
 
 
@@ -22,7 +22,7 @@ class Trip(CreatedModel):
     view_count: Mapped[int] = mapped_column(Integer, default=0)
 
     user_id: Mapped[Optional[UUID]] = mapped_column(ForeignKey("users.id"))
-    created_by: Mapped["User"] = relationship("User", back_populates="trips") # noqa
+    created_by: Mapped["User"] = relationship("User", back_populates="trips")
 
     images: Mapped[list["TripImage"]] = relationship("TripImage", back_populates="trip", cascade="all, delete-orphan")
     likes: Mapped[list["TripLike"]] = relationship("TripLike", back_populates="trip", cascade="all, delete-orphan")
@@ -84,7 +84,7 @@ class TripLike(Model):
     user_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"))
     is_like: Mapped[bool] = mapped_column(Boolean, nullable=True)
 
-    user: Mapped["User"] = relationship("User") # noqa
+    user: Mapped["User"] = relationship("User")
 
     @classmethod
     async def update_like(cls, trip_id: UUID, is_like: str):

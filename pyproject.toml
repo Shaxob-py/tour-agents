@@ -29,4 +29,5 @@ dependencies = [
     "tortoise>=0.1.1",
     "uvicorn>=0.35.0",
     "websockets>=15.0.1",
+    "wtforms>=3.2.1",
 ]

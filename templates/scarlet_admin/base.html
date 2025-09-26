@@ -1,0 +1,40 @@
+{% extends "scarlet_admin/base.html" %}
+
+{% block body_scripts %}
+  {{ super() }}
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.6/jquery.inputmask.min.js"></script>
+
+  <script>
+    jQuery(document).ready(function ($) {
+        // Update sahifadagi phone_number input
+        let $phone = $('input[name="phone_number"]');
+
+        // Mask qo'yamiz
+        $phone.inputmask({
+            "mask": "+\\9\\98(99) 999-99-99"
+        });
+
+        // Submit paytida formatni tozalab yuboramiz
+        $phone.closest("form").on("submit", function (event) {
+            // eski hidden bor bo‘lsa, olib tashlaymiz
+            $(this).find("input[name='phone_number_hidden']").remove();
+
+            let phoneInput = $phone.val();
+            let modifiedPhoneInput = phoneInput.replace(/^\+|\D/g, ''); // faqat raqamlar
+
+            // yangi hidden input qo'shamiz
+            let newInput = $('<input>').attr({
+                type: 'hidden',
+                name: 'phone_number',
+                value: modifiedPhoneInput,
+                id: 'phone_number_hidden'
+            });
+            $(this).append(newInput);
+
+            // agar xohlasangiz — masklangan fieldni readonly qilib yuborishingiz ham mumkin
+            // $phone.prop("readonly", true);
+        });
+    });
+  </script>
+{% endblock %}

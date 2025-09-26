@@ -1,6 +1,6 @@
 import os
 from datetime import datetime
-
+import random
 import aiofiles
 import httpx
 from starlette import status
@@ -21,8 +21,7 @@ class AIService:
             "model": settings.DEEPSEEK_AI_MODEL,
             "messages": [
                 {"role": "system",
-                 "content": "You are a helpful AI tour agent and you should speak in Uzbek language and your word"
-                            "  should not 250 example "
+                 "content": "You are a helpful AI tour agent and you should speak in Uzbek language and your word  should not 250 example "
                             "1: Samarkand "
                             "2: Buxara "
                             "price 200 $ that is all"},
@@ -43,7 +42,7 @@ class AIService:
 
     async def handle_image_unsplash(self, query: str) -> str | None:  # noqa
         url = "https://api.unsplash.com/search/photos"
-        params = {"query": query, "per_page": 1}
+        params = {"query": query, "per_page": 20}
         headers = {"Authorization": f"Client-ID {UNSPLASH_ACCESS_KEY}"}
 
         async with httpx.AsyncClient(timeout=15.0, follow_redirects=True) as client:
@@ -59,7 +58,10 @@ class AIService:
                 print("No results for query:", query)
                 return None
 
-            image_url = results[0]["urls"]["regular"]
+            random_image = random.choice(results)
+            image_url = random_image["urls"]["regular"]
+
+
             img_resp = await client.get(image_url)
             if img_resp.status_code != status.HTTP_200_OK:
                 print("Image download failed:", img_resp.status_code)

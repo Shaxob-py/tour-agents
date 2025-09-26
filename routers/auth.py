@@ -3,7 +3,7 @@ from fastapi.params import Depends, Body
 from fastapi.responses import ORJSONResponse
 from starlette import status
 from database import User
-from schemas.base_schema import LoginSchema, LoginSuccessSchema, RefreshTokenSchema
+from schemas.base_schema import LoginSchema, LoginSuccessSchema, RefreshTokenSchema, TokenSchema
 from services.otp_services import OtpService
 from utils.security import create_access_token, create_refresh_token, verify_refresh_token
 from utils.utils import generate_code
@@ -18,13 +18,11 @@ def otp_service():
 @auth_router.post('/login')
 async def login_view(data: LoginSchema, service: OtpService = Depends(otp_service)):
     user = await User.get_by_phone_number(data.phone)
-
     if not user:
         return ORJSONResponse(
             {"message": "Siz bot orqali ro'yxatdan o'tmagansiz. Iltimos, botdan ro'yxatdan o'ting."},
             status_code=status.HTTP_401_UNAUTHORIZED
         )
-
     code = generate_code()
     await service.send_otp_by_telegram(user, code)
 
@@ -34,11 +32,11 @@ async def login_view(data: LoginSchema, service: OtpService = Depends(otp_servic
 
 
 @auth_router.post('/token', response_model=LoginSuccessSchema)
-async def token_view(phone: str = Body(), code: str = Body(), service: OtpService = Depends(otp_service)):
-    is_verified, user_data = await service.verify_code_telegram(phone, code)
+async def token_view(data: TokenSchema, service: OtpService = Depends(otp_service)):
+    is_verified, user_data = await service.verify_code_telegram(data.phone, data.code)
 
     if is_verified:
-        user = await User.get_by_phone_number(phone)
+        user = await User.get_by_phone_number(data.phone)
 
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
