@@ -11,7 +11,7 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse
 from starlette.staticfiles import StaticFiles
 
-from admin import admin          # admin obyektini import qilamiz
+from admin import admin          # scarlet_admin obyektini import qilamiz
 from database.base_model import db
 from routers import router
 

@@ -90,8 +90,11 @@ class TripLike(Model):
         if is_like:
             if existing_record:
                 await db.execute(
-                    update(Trip).where(Trip.id == trip_id).values(likes_count=Trip.likes_count - 1),
-                    delete(cls).where(cls.trip_id==trip_id,cls.user_id==user_id))
+                    update(Trip).where(Trip.id == trip_id).values(likes_count=Trip.likes_count - 1)),
+                await db.execute(
+                    delete(cls)
+                    .where(cls.trip_id == trip_id, cls.user_id == user_id)
+                )
             else:
                 await db.execute(
                     update(Trip).where(Trip.id == trip_id).values(likes_count=Trip.likes_count + 1))
@@ -99,6 +102,10 @@ class TripLike(Model):
             if existing_record:
                 await db.execute(
                     update(Trip).where(Trip.id == trip_id).values(likes_count=Trip.dislikes_count - 1))
+                await db.execute(
+                    delete(cls)
+                    .where(cls.trip_id == trip_id, cls.user_id == user_id)
+                )
             else:
                 await db.execute(
                     update(Trip).where(Trip.id == trip_id).values(likes_count=Trip.dislikes_count + 1))
