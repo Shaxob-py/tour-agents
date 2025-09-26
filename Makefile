@@ -27,3 +27,6 @@ country_script:
 
 createsuperuser:
 	python3  utils/superuser.py
+
+flake8:
+	flake8 .
