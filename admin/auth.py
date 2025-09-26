@@ -7,7 +7,7 @@ from database.users import User
 from utils.utils import normalize_phone
 
 pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
-
+# TODO utilga otkazish
 
 class UsernameAndPasswordProvider(AuthProvider):
     async def login(

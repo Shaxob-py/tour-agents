@@ -13,6 +13,7 @@ from core.config import settings
 from database import User
 
 pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
+# TODO utilsga otkazish kk
 
 http_bearer = HTTPBearer()
 
@@ -64,7 +65,7 @@ def get_password_hash(password):
     return pwd_context.hash(password)
 
 
-async def get_current_user(token: Annotated[str, Depends(http_bearer)]):
+async def get_current_user(token: Annotated[str, Depends(http_bearer)]) -> User:
     token = token.credentials    # noqa
     try:
         encoded_jwt = jwt.decode(
