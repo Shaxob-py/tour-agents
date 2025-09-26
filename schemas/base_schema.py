@@ -30,7 +30,7 @@ class TripSchema(BaseModel):
 
 
 class LoginSchema(BaseModel):
-    phone: str = Field(..., min_length=1, examples=['991234567'])
+    phone: str = Field(..., min_length=1, examples=['998901001010'])
 
 
 class UserSchema(BaseModel):
@@ -73,7 +73,7 @@ class LoginSuccessSchema(BaseModel):
 
 class TripLikeRequest(BaseModel):
     trip_id: UUID
-    is_like: bool
+    is_like: bool = Field(...,examples=['True'])
 
 
 class RefreshTokenSchema(BaseModel):
@@ -81,5 +81,5 @@ class RefreshTokenSchema(BaseModel):
 
 
 class TokenSchema(BaseModel):
-    phone: str = Field(..., min_length=1, examples=['991234567'])
+    phone: str = Field(..., min_length=1, examples=['998901001010'])
     code: str

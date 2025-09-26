@@ -32,11 +32,11 @@ async def login_view(data: LoginSchema, service: OtpService = Depends(otp_servic
 
 
 @auth_router.post('/token', response_model=LoginSuccessSchema)
-async def token_view(phone: str = Body(), code: str = Body(), service: OtpService = Depends(otp_service)):
-    is_verified, user_data = await service.verify_code_telegram(phone, code)
+async def token_view(data:TokenSchema, service: OtpService = Depends(otp_service)):
+    is_verified, user_data = await service.verify_code_telegram(data.phone, data.code)
 
     if is_verified:
-        user = await User.get_by_phone_number(phone)
+        user = await User.get_by_phone_number(data.phone)
 
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
