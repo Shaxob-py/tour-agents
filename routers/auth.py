@@ -3,7 +3,7 @@ from fastapi.params import Depends, Body
 from fastapi.responses import ORJSONResponse
 from starlette import status
 from database import User
-from schemas.base_schema import LoginSchema, LoginSuccessSchema, RefreshTokenSchema
+from schemas.base_schema import LoginSchema, LoginSuccessSchema, RefreshTokenSchema, TokenSchema
 from services.otp_services import OtpService
 from utils.security import create_access_token, create_refresh_token, verify_refresh_token
 from utils.utils import generate_code
@@ -32,7 +32,7 @@ async def login_view(data: LoginSchema, service: OtpService = Depends(otp_servic
 
 
 @auth_router.post('/token', response_model=LoginSuccessSchema)
-async def token_view(data:TokenSchema, service: OtpService = Depends(otp_service)):
+async def token_view(data: TokenSchema, service: OtpService = Depends(otp_service)):
     is_verified, user_data = await service.verify_code_telegram(data.phone, data.code)
 
     if is_verified:

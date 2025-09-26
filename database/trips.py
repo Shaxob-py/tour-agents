@@ -7,8 +7,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import mapped_column, relationship, Mapped
 from sqlalchemy.orm import selectinload
 
-from database import Model, User
-from database.base_model import db, CreatedModel
+from database.base_model import db, CreatedModel, Model
 
 
 class Trip(CreatedModel):
