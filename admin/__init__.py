@@ -9,7 +9,7 @@ from database.base_model import db
 admin = Admin(
     engine=db.engine,
     title="Trip",
-    templates_dir="templates",
+    # templates_dir="templates",
     auth_provider=UsernameAndPasswordProvider()
 )
 

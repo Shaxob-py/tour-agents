@@ -1,7 +1,6 @@
 from typing import Optional
 
-
-from sqlalchemy import String, Date, Boolean, ForeignKey, Integer, update , delete
+from sqlalchemy import String, Date, Boolean, ForeignKey, Integer, update, delete
 from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import mapped_column, relationship, Mapped
@@ -74,50 +73,45 @@ class TripLike(Model):
     trip: Mapped["Trip"] = relationship("Trip", back_populates="likes")
 
     user_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"))
-    is_like: Mapped[bool] = mapped_column(Boolean, nullable=True)
-
     user: Mapped["User"] = relationship("User")
 
-
+    is_like: Mapped[bool] = mapped_column(Boolean, nullable=True)
 
     @classmethod
     async def update_like(cls, trip_id: UUID, user_id: UUID, is_like: bool):
-        query = await db.execute(
-            select(cls).where(cls.trip_id == trip_id, cls.user_id == user_id)
-        )
+        query = await db.execute(select(cls).where(cls.trip_id == trip_id, cls.user_id == user_id))
+
         existing_record = query.scalar_one_or_none()
 
-        if is_like:
-            if existing_record:
-                await db.execute(
-                    update(Trip).where(Trip.id == trip_id).values(likes_count=Trip.likes_count - 1)),
-                await db.execute(
-                    delete(cls)
-                    .where(cls.trip_id == trip_id, cls.user_id == user_id)
-                )
-            else:
-                await db.execute(
-                    update(Trip).where(Trip.id == trip_id).values(likes_count=Trip.likes_count + 1))
-        else:
-            if existing_record:
-                await db.execute(
-                    update(Trip).where(Trip.id == trip_id).values(likes_count=Trip.dislikes_count - 1))
-                await db.execute(
-                    delete(cls)
-                    .where(cls.trip_id == trip_id, cls.user_id == user_id)
-                )
-            else:
-                await db.execute(
-                    update(Trip).where(Trip.id == trip_id).values(likes_count=Trip.dislikes_count + 1))
+        key = 'dis' * (not is_like) + 'likes_count'
+
+        kwargs = {
+            key: getattr(Trip, key) + bool(existing_record) * (-2) + 1
+        }
+
         if existing_record:
-            await db.execute(
-                update(cls).where(cls.trip_id == trip_id, cls.user_id == user_id).values(is_like=is_like)
-            )
+            await db.execute(delete(cls).where(cls.trip_id == trip_id, cls.user_id == user_id))
         else:
-            await cls.create(
-                user_id=user_id,
-                trip_id=trip_id,
-                is_like=is_like)
+            await cls.create(user_id=user_id, trip_id=trip_id, is_like=is_like)
+
+        await db.execute(update(Trip).where(Trip.id == trip_id).values(**kwargs))
+
+        # if is_like:
+        #     if existing_record:
+        #         await db.execute(update(Trip).where(Trip.id == trip_id).values(likes_count=Trip.likes_count - 1)),
+        #         await db.execute(delete(cls).where(cls.trip_id == trip_id, cls.user_id == user_id))
+        #     else:
+        #         await db.execute(update(Trip).where(Trip.id == trip_id).values(likes_count=Trip.likes_count + 1))
+        #         await cls.create(user_id=user_id, trip_id=trip_id, is_like=is_like)
+        #
+        # else:
+        #     if existing_record:
+        #         await db.execute(update(Trip).where(Trip.id == trip_id).values(dislikes_count=Trip.dislikes_count - 1))
+        #         await db.execute(delete(cls).where(cls.trip_id == trip_id, cls.user_id == user_id))
+        #     else:
+        #         await db.execute(update(Trip).where(Trip.id == trip_id).values(dislikes_count=Trip.dislikes_count + 1))
+        #         await cls.create(user_id=user_id, trip_id=trip_id, is_like=is_like)
+
         await db.commit()
 
 # @classmethod

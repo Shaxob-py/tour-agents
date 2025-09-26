@@ -49,7 +49,7 @@ task
 
 8. /api/v1/trip/like body ga otkazish✅
 
-9. isort, flake8
+9. isort, flake8✅
 
 
 

@@ -1,14 +1,16 @@
 from datetime import datetime, date
 from typing import Optional
 from uuid import UUID
+
 from fastapi import APIRouter, Query, HTTPException
 from fastapi.params import Depends
 from fastapi.responses import ORJSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 from starlette.status import HTTP_500_INTERNAL_SERVER_ERROR
+
 from const import TOUR_PROMPT
-from database import Trip
+from database import Trip, User
 from database.base_model import get_session
 from database.trips import TripLike, TripImage
 from schemas.base_schema import TripSchema, ResponseSchema, ReadTripSchema, TripLikeRequest, ListResponseSchema
@@ -86,7 +88,7 @@ async def list_trips(
 
 
 @trip_agents.post("/trips/like")
-async def like_trip(data: TripLikeRequest, current_user=Depends(get_current_user)):
+async def like_trip(data: TripLikeRequest, current_user: User = Depends(get_current_user)):
     await TripLike.update_like(data.trip_id, current_user.id, data.is_like)
     # await TripLike.create_or_update(data.trip_id, current_user.id, data.is_like)
 

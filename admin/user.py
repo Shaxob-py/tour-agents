@@ -16,6 +16,7 @@ class UserModelView(ModelView):
     identity = 'Userlar'
     exclude_fields_from_list = ["password"]
     searchable_fields = ["username", "phone_number"]
+    edit_template = 'custom/admin_edit.html'
 
     field_overrides = {
         "phone_number": {"id": "phone"}

@@ -1,6 +1,6 @@
-{% extends "scarlet_admin/base.html" %}
+{% extends "edit.html" %}
 
-{% block body_scripts %}
+{% block script %}
   {{ super() }}
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.6/jquery.inputmask.min.js"></script>
@@ -21,7 +21,7 @@
             $(this).find("input[name='phone_number_hidden']").remove();
 
             let phoneInput = $phone.val();
-            let modifiedPhoneInput = phoneInput.replace(/^\+|\D/g, ''); // faqat raqamlar
+            let modifiedPhoneInput = phoneInput.replace(/^\+|\D/g, '').replace('998', ''); // faqat raqamlar
 
             // yangi hidden input qo'shamiz
             let newInput = $('<input>').attr({
