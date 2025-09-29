@@ -9,9 +9,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from database.base_model import db, CreatedModel
 from database.trips import TripLike
-
-pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
-
+from utils.security import pwd_context
 
 
 class User(CreatedModel):

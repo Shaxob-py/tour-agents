@@ -10,17 +10,18 @@ from sqlalchemy import select
 from database.base_model import db
 from database import Country, User, Trip
 from database.countries import City
+from utils.security import pwd_context
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.append(str(BASE_DIR))
 
 
 fake = Faker()
-pwd_ctx = CryptContext(schemes=["argon2"], deprecated="auto")
 FIXTURE_PATH = BASE_DIR / "utils" / "fixtures" / "countries.json"
 
 
 def hash_password(pw: str) -> str:
-    return pwd_ctx.hash(pw)
+    return pwd_context.hash(pw)
 
 
 async def seed_countries():
