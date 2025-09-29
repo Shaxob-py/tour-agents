@@ -90,7 +90,7 @@ async def list_trips(
 @trip_agents.post("/trips/like")
 async def like_trip(data: TripLikeRequest, current_user: User = Depends(get_current_user)):
     await TripLike.update_like(data.trip_id, current_user.id, data.is_like)
-    # await TripLike.create_or_update(data.trip_id, current_user.id, data.is_like)
+
 
 
 @trip_agents.get("/trips/{id}", response_model=ResponseSchema[ReadTripSchema])

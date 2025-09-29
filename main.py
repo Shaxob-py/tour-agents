@@ -11,7 +11,7 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse
 from starlette.staticfiles import StaticFiles
 
-from admin import admin  # starlette_admin obyektini import qilamiz
+from admin import admin
 from database.base_model import db
 from routers import router
 
@@ -19,7 +19,7 @@ from routers import router
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
     await db.create_all()
-    admin.mount_to(app)  # shu yerda app ga mount qilamiz
+    admin.mount_to(app)
     print('project ishga tushdi')
     yield
     print('project toxtadi')
