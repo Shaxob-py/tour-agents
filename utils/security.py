@@ -13,7 +13,6 @@ from core.config import settings
 from database import User
 
 pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
-# TODO utilsga otkazish kk
 
 http_bearer = HTTPBearer()
 
