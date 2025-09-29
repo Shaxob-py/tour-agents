@@ -19,7 +19,7 @@ from services.trip_service import TripService
 from utils.security import get_current_user
 from utils.utils import get_travel_days
 
-trip_agents = APIRouter(tags=["trip"])
+trip_agents = APIRouter(tags=["Trip"])
 
 
 @trip_agents.post("/trips")

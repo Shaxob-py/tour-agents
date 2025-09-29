@@ -34,12 +34,11 @@ class LoginSchema(BaseModel):
 
 
 class UserSchema(BaseModel):
-    id : UUID
+    id: UUID
     username: str
     phone: str
     created_at: datetime
-    updated_at: datetime  | None = None
-
+    updated_at: datetime | None = None
 
     class Config:
         from_attributes = True
