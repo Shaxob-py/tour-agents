@@ -8,7 +8,7 @@ from services.otp_services import OtpService
 from utils.security import create_access_token, create_refresh_token, verify_refresh_token
 from utils.utils import generate_code
 
-auth_router = APIRouter(prefix='/auth', tags=["auth"])
+auth_router = APIRouter(prefix='/auth', tags=["Auth"])
 
 
 def otp_service():

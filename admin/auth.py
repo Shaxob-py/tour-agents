@@ -1,13 +1,11 @@
-from passlib.context import CryptContext
 from starlette.requests import Request
 from starlette.responses import Response
 from starlette_admin.auth import AdminConfig, AdminUser, AuthProvider
 from starlette_admin.exceptions import LoginFailed
-from database.users import User
+
+from database import User
 from utils.utils import normalize_phone
 
-pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
-# TODO utilga otkazish
 
 class UsernameAndPasswordProvider(AuthProvider):
     async def login(

@@ -11,7 +11,7 @@ from database.base_model import db, CreatedModel
 from database.trips import TripLike
 
 pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
-# TODO utilga otkazish
+
 
 
 class User(CreatedModel):

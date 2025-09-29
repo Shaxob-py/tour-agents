@@ -34,7 +34,11 @@ class LoginSchema(BaseModel):
 
 
 class UserSchema(BaseModel):
+    id: UUID
     username: str
+    phone_number: str
+    created_at: datetime
+    updated_at: datetime | None = None
 
     class Config:
         from_attributes = True
@@ -73,7 +77,7 @@ class LoginSuccessSchema(BaseModel):
 
 class TripLikeRequest(BaseModel):
     trip_id: UUID
-    is_like: bool = Field(...,examples=['True'])
+    is_like: bool = Field(..., examples=['True'])
 
 
 class RefreshTokenSchema(BaseModel):

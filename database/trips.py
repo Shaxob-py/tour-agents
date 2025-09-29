@@ -1,7 +1,6 @@
 from typing import Optional
 
-
-from sqlalchemy import String, Date, Boolean, ForeignKey, Integer, update , delete
+from sqlalchemy import String, Date, Boolean, ForeignKey, Integer, update, delete
 from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import mapped_column, relationship, Mapped
