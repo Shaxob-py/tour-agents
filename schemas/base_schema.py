@@ -36,7 +36,7 @@ class LoginSchema(BaseModel):
 class UserSchema(BaseModel):
     id: UUID
     username: str
-    phone: str
+    phone_number: str
     created_at: datetime
     updated_at: datetime | None = None
 
