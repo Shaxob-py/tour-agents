@@ -30,3 +30,6 @@ createsuperuser:
 
 flake8:
 	flake8 .
+
+faker:
+	python -m utils.fake_data

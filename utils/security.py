@@ -10,7 +10,7 @@ from passlib.context import CryptContext
 from starlette import status
 
 from core.config import settings
-from database import User
+# from database import User
 
 pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 
@@ -51,7 +51,7 @@ def verify_refresh_token(token: str):
     token_type: str = payload.get("token_type")
 
     if not user_id or token_type != "refresh":
-        raise HTTPException(status_code=401, detail="Invalid refresh token")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token")
 
     return uuid.UUID(user_id)
 
@@ -64,7 +64,8 @@ def get_password_hash(password):
     return pwd_context.hash(password)
 
 
-async def get_current_user(token: Annotated[str, Depends(http_bearer)]) -> User:
+async def get_current_user(token: Annotated[str, Depends(http_bearer)]):
+    from database.users import User
     token = token.credentials    # noqa
     try:
         encoded_jwt = jwt.decode(
@@ -82,7 +83,7 @@ async def get_current_user(token: Annotated[str, Depends(http_bearer)]) -> User:
     try:
         user_uuid = uuid.UUID(user_id)
     except Exception:
-        raise HTTPException(status_code=400, detail="Invalid user ID format")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid user ID format")
 
     user = await User.get(user_uuid)
     if user:

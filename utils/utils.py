@@ -4,7 +4,6 @@ from random import randint
 import httpx
 
 from core.config import settings
-from database import User
 
 
 async def send_telegram_message(chat_id: int, text: str):
@@ -32,6 +31,7 @@ def get_travel_days(start: str, end: str) -> int:
 
 
 async def check_user(phone_number: str, username: str, telegram_id: int):
+    from database import User
     user = await User.get_telegram_id_by_phone_number(phone_number)
     if user:
         return await User.update_by_username(phone_number, username)
