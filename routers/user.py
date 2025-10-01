@@ -17,6 +17,10 @@ async def get_me(current_user: User = Depends(get_current_user)):
     )
 
 
-@user_router.post("/create", response_model=LoginSchema)
+@user_router.post("/create", response_model=ResponseSchema)
 async def create_order(date: LoginSchema):
-    await Order.create(phone_number=date)
+    await Order.create(phone_number=date.phone_number       )
+    return ResponseSchema(
+        message='Order Successfully',
+        data=None
+    )

@@ -85,8 +85,6 @@ class TripLike(Model):
 
     user: Mapped["User"] = relationship("User")
 
-
-
     @classmethod
     async def update_like(cls, trip_id: UUID, user_id: UUID, is_like: bool):
         query = await db.execute(select(cls).where(cls.trip_id == trip_id, cls.user_id == user_id))
@@ -106,54 +104,4 @@ class TripLike(Model):
 
         await db.execute(update(Trip).where(Trip.id == trip_id).values(**kwargs))
 
-        # if is_like:
-        #     if existing_record:
-        #         await db.execute(update(Trip).where(Trip.id == trip_id).values(likes_count=Trip.likes_count - 1)),
-        #         await db.execute(delete(cls).where(cls.trip_id == trip_id, cls.user_id == user_id))
-        #     else:
-        #         await db.execute(update(Trip).where(Trip.id == trip_id).values(likes_count=Trip.likes_count + 1))
-        #         await cls.create(user_id=user_id, trip_id=trip_id, is_like=is_like)
-        #
-        # else:
-        #     if existing_record:
-        #         await db.execute(update(Trip).where(Trip.id == trip_id).values(dislikes_count=Trip.dislikes_count - 1))
-        #         await db.execute(delete(cls).where(cls.trip_id == trip_id, cls.user_id == user_id))
-        #     else:
-        #         await db.execute(update(Trip).where(Trip.id == trip_id).values(dislikes_count=Trip.dislikes_count + 1))
-        #         await cls.create(user_id=user_id, trip_id=trip_id, is_like=is_like)
-
         await db.commit()
-
-# @classmethod
-#    async def update_like(cls, trip_id: UUID, user_id: UUID, is_like: bool):
-#        trip_id = await Trip.get(trip_id)
-#        if is_like:
-#            query = (
-#                update(cls).where(cls.trip_id == trip_id, cls.user_id != user_id).values(
-#                    trip_id.likes_count + 1)
-#            )
-#        else:
-#            query = (
-#                update(cls).where(cls.trip_id == trip_id, cls.user_id != user_id).values(
-#                    trip_id.dislikes_count + 1)
-#            )
-#        await db.execute(query)
-#        await db.commit()
-#
-#    @classmethod
-#    async def create_or_update(cls, trip_id: UUID, user_id: UUID, is_like: bool):
-#        query = select(cls).where(cls.trip_id == trip_id, cls.user_id == user_id)
-#        result = await db.execute(query)
-#        trip_like = result.scalar_one_or_none()
-#
-#        if trip_like:
-#            query = (
-#                update(cls).where(cls.trip_id == trip_id, cls.user_id != user_id).values(is_like=is_like)
-#            )
-#            await db.execute(query)
-#            await db.commit()
-#        return await cls.create(
-#            user_id=user_id,
-#            trip_id=trip_id,
-#            is_like=is_like,
-#        )

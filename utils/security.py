@@ -6,13 +6,12 @@ from fastapi import HTTPException
 from fastapi.params import Depends
 from fastapi.security import HTTPBearer
 from jose import jwt, exceptions
-from passlib.context import CryptContext
+
 from starlette import status
 
 from core.config import settings
 from database import User
-
-pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
+from database.users import pwd_context
 
 http_bearer = HTTPBearer()
 
