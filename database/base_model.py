@@ -144,6 +144,5 @@ class CreatedModel(Model):
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
 
 
-# TODO
 async def get_session():
     yield db._session  # noqa

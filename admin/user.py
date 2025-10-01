@@ -13,7 +13,7 @@ class UserModelView(ModelView):
     ]
 
     label = 'Userlar'
-    identity = 'Userlar'
+    identity = 'users'
     exclude_fields_from_list = ["password"]
     searchable_fields = ["username", "phone_number"]
     edit_template = 'custom/admin_edit.html'
@@ -28,6 +28,11 @@ class UserModelView(ModelView):
         "/static/js/phone-mask.js",  # biz yaratgan fayl
     ]
 
+    def get_list_query(self, request):
+        return super().get_list_query(request).where(User.role == User.Role.USER)
+
+    def get_count_query(self, request):
+        return super().get_count_query(request).where(User.role == User.Role.USER)
 
 class AdminModelView(ModelView):
     fields = [
@@ -42,6 +47,14 @@ class AdminModelView(ModelView):
         # EnumField("role", enum=User.Role, label="Role"),
     ]
     label = 'Adminlar'
-    identity = 'Adminlar'
+    identity = 'admins'
     exclude_fields_from_list = ["password"]
     searchable_fields = ["username", "phone_number"]
+
+
+
+    def get_list_query(self, request):
+        return super().get_list_query(request).where(User.role == User.Role.ADMIN)
+
+    def get_count_query(self, request):
+        return super().get_count_query(request).where(User.role == User.Role.ADMIN)
