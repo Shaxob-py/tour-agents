@@ -29,6 +29,7 @@ class Settings(BaseSettings):
     DEEPSEEK_AI_API_TOKEN: str = Field()
 
     UNSPLASH_ACCESS_KEY: str = Field()
+    UNSPLASH_URL: str = Field()
 
     @property
     def postgres_sync_url(self):

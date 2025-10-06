@@ -17,7 +17,7 @@ def otp_service():
 
 @auth_router.post('/login')
 async def login_view(data: LoginSchema, service: OtpService = Depends(otp_service)):
-    user = await User.get_by_phone_number(data.phone)
+    user = await User.get_by_phone_number(data.phone_number)
     if not user:
         return ORJSONResponse(
             {"message": "Siz bot orqali ro'yxatdan o'tmagansiz. Iltimos, botdan ro'yxatdan o'ting."},
@@ -33,10 +33,10 @@ async def login_view(data: LoginSchema, service: OtpService = Depends(otp_servic
 
 @auth_router.post('/token', response_model=LoginSuccessSchema)
 async def token_view(data: TokenSchema, service: OtpService = Depends(otp_service)):
-    is_verified, user_data = await service.verify_code_telegram(data.phone, data.code)
+    is_verified, user_data = await service.verify_code_telegram(data.phone_number, data.code)
 
     if is_verified:
-        user = await User.get_by_phone_number(data.phone)
+        user = await User.get_by_phone_number(data.phone_number)
 
         if not user:
             raise HTTPException(status_code=404, detail="User not found")

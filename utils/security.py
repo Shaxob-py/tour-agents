@@ -6,7 +6,6 @@ from fastapi import HTTPException
 from fastapi.params import Depends
 from fastapi.security import HTTPBearer
 from jose import jwt, exceptions
-
 from starlette import status
 
 from core.config import settings

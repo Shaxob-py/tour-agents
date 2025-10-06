@@ -5,10 +5,10 @@ from passlib.context import CryptContext
 from sqlalchemy import Enum as SQLEnum
 from sqlalchemy import String, select, update
 from sqlalchemy.dialects.mysql import BIGINT
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship, selectinload
 
 from database.base_model import db, CreatedModel
-from database.trips import TripLike
+from database.trips import TripLike, Trip
 
 pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 
@@ -59,3 +59,14 @@ class User(CreatedModel):
     @staticmethod
     def get_password_hash(password: str) -> str:
         return pwd_context.hash(password)
+
+    @classmethod
+    async def get_user_trips(cls, user_id: str):
+        result = await db.execute(
+            select(cls)
+            .where(cls.id == user_id)
+            .options(
+                selectinload(cls.trips).selectinload(Trip.images)  # <--- два join'а
+            )
+        )
+        return result.scalar_one_or_none()

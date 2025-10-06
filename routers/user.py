@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from database import User
 from database.order import Order
-from schemas.base_schema import ResponseSchema, UserSchema, LoginSchema
+from schemas.base_schema import ResponseSchema, UserSchema, LoginSchema, UserDetailsSchema
 from utils.security import get_current_user
 
 user_router = APIRouter(prefix='/users', tags=["User"])
@@ -17,10 +17,19 @@ async def get_me(current_user: User = Depends(get_current_user)):
     )
 
 
-@user_router.post("/create", response_model=ResponseSchema)
+@user_router.post("/order", response_model=ResponseSchema)
 async def create_order(date: LoginSchema):
     await Order.create(phone_number=date.phone_number       )
     return ResponseSchema(
         message='Order Successfully',
-        data=None
-    )
+        data=None)
+
+@user_router.get("", response_model=ResponseSchema)
+async def user_detailed(id: str):
+    user = await User.get_user_trips(id)
+    return ResponseSchema[UserDetailsSchema](
+        message='User detail',
+        data=user)
+
+
+

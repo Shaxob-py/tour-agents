@@ -21,7 +21,8 @@ class AIService:
             "model": settings.DEEPSEEK_AI_MODEL,
             "messages": [
                 {"role": "system",
-                 "content": "You are a helpful AI tour agent and you should speak in Uzbek language and your word  should not 250 example "
+                 "content": "You are a helpful AI tour agent and you should speak in Uzbek language and "
+                            "your word  should not 250 example "
                             "1: Samarkand "
                             "2: Buxara "
                             "price 200 $ that is all"},
@@ -41,12 +42,12 @@ class AIService:
             return text
 
     async def handle_image_unsplash(self, query: str) -> str | None:  # noqa
-        url = "https://api.unsplash.com/search/photos"
+
         params = {"query": query, "per_page": 20}
         headers = {"Authorization": f"Client-ID {UNSPLASH_ACCESS_KEY}"}
 
         async with httpx.AsyncClient(timeout=15.0, follow_redirects=True) as client:
-            resp = await client.get(url, params=params, headers=headers)
+            resp = await client.get(settings.UNSPLASH_URL, params=params, headers=headers)
 
             if resp.status_code != status.HTTP_200_OK:
                 print("Unsplash API error:", resp.status_code, resp.text)

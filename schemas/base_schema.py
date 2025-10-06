@@ -33,19 +33,38 @@ class LoginSchema(BaseModel):
     phone_number: str = Field(..., min_length=1, examples=['998901001010'])
 
 
+class ImageSchema(BaseModel):
+    url: str
+
+    class Config:
+        from_attributes = True
+
+
+class LoginSuccessSchema(BaseModel):
+    access_token: str
+    refresh_token: str
+
+
+class TripLikeRequest(BaseModel):
+    trip_id: UUID
+    is_like: bool = Field(..., examples=['True'])
+
+
+class RefreshTokenSchema(BaseModel):
+    refresh_token: str
+
+
+class TokenSchema(BaseModel):
+    phone_number: str = Field(..., min_length=1, examples=['998901001010'])
+    code: str
+
+
 class UserSchema(BaseModel):
     id: UUID
     username: str
     phone_number: str
     created_at: datetime
     updated_at: datetime | None = None
-
-    class Config:
-        from_attributes = True
-
-
-class ImageSchema(BaseModel):
-    url: str
 
     class Config:
         from_attributes = True
@@ -70,20 +89,10 @@ class ReadTripSchema(BaseModel):
         from_attributes = True
 
 
-class LoginSuccessSchema(BaseModel):
-    access_token: str
-    refresh_token: str
+class UserDetailsSchema(BaseModel):
+    id: UUID
+    username: str
+    trips: list[ReadTripSchema]
 
-
-class TripLikeRequest(BaseModel):
-    trip_id: UUID
-    is_like: bool = Field(..., examples=['True'])
-
-
-class RefreshTokenSchema(BaseModel):
-    refresh_token: str
-
-
-class TokenSchema(BaseModel):
-    phone: str = Field(..., min_length=1, examples=['998901001010'])
-    code: str
+    class Config:
+        from_attributes = True
