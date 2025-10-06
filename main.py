@@ -31,6 +31,8 @@ app = FastAPI(
     description="JWT Authentication bilan himoyalangan API",
     lifespan=lifespan,
 )
+
+
 MEDIA_DIR = os.path.join(os.getcwd(), "media")
 
 if not os.path.exists(MEDIA_DIR):
@@ -100,6 +102,7 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
         {'message': msg},
         status.HTTP_400_BAD_REQUEST,
     )
+
 
 
 app.include_router(router, prefix="/api/v1")

@@ -17,7 +17,7 @@ def otp_service():
 
 @auth_router.post('/login')
 async def login_view(data: LoginSchema, service: OtpService = Depends(otp_service)):
-    user = await User.get_by_phone_number(data.phone)
+    user = await User.get_by_phone_number(data.phone_number)
     if not user:
         return ORJSONResponse(
             {"message": "Siz bot orqali ro'yxatdan o'tmagansiz. Iltimos, botdan ro'yxatdan o'ting."},

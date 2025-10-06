@@ -1,9 +1,10 @@
 from starlette_admin.contrib.sqla import Admin
 from admin.auth import UsernameAndPasswordProvider
 from admin.trips import TripModelView
-from admin.user import UserModelView, AdminModelView
-from database import User, Trip
+from admin.user import UserModelView, AdminModelView, SupportMessageAdmin
+from database import User, Trip, SupportMessage
 from database.base_model import db
+
 
 
 admin = Admin(
@@ -16,3 +17,5 @@ admin = Admin(
 admin.add_view(AdminModelView(User))
 admin.add_view(TripModelView(Trip))
 admin.add_view(UserModelView(User))
+admin.add_view(SupportMessageAdmin(SupportMessage))
+

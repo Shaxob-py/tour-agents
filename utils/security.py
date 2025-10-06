@@ -5,11 +5,14 @@ from typing import Annotated
 from fastapi import HTTPException
 from fastapi.params import Depends
 from fastapi.security import HTTPBearer
-from jose import jwt, exceptions
+from jose import jwt, exceptions, JWTError
 from passlib.context import CryptContext
+from sqlalchemy import select
 from starlette import status
 
 from core.config import settings
+from database.session import AsyncSessionLocal
+
 # from database import User
 
 pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
@@ -66,27 +69,31 @@ def get_password_hash(password):
 
 async def get_current_user(token: Annotated[str, Depends(http_bearer)]):
     from database.users import User
-    token = token.credentials    # noqa
+    token = token.credentials
+
     try:
-        encoded_jwt = jwt.decode(
+        payload = jwt.decode(
             token,
             settings.JWT_SECRET_KEY,
             algorithms=[settings.JWT_ALGORITHM]
         )
-    except exceptions.JWTError as e:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))
-
-    user_id = encoded_jwt.get("sub")
-    if not user_id:
+    except JWTError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+
+    user_id = payload.get("sub")
+    if not user_id:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token payload")
 
     try:
         user_uuid = uuid.UUID(user_id)
     except Exception:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid user ID format")
 
-    user = await User.get(user_uuid)
-    if user:
-        return user
+    async with AsyncSessionLocal() as session:
+        result = await session.execute(select(User).where(User.id == user_uuid))
+        user = result.scalar_one_or_none()
 
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+        if not user:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+
+        return user

@@ -30,7 +30,7 @@ class TripSchema(BaseModel):
 
 
 class LoginSchema(BaseModel):
-    phone: str = Field(..., min_length=1, examples=['998901001010'])
+    phone_number: str = Field(..., min_length=1, examples=['998901001010'])
 
 
 class UserSchema(BaseModel):
@@ -87,3 +87,18 @@ class RefreshTokenSchema(BaseModel):
 class TokenSchema(BaseModel):
     phone: str = Field(..., min_length=1, examples=['998901001010'])
     code: str
+
+
+
+
+
+class CreateSupportSchema(BaseModel):
+    message: str
+
+
+class ReadSupportSchema(CreateSupportSchema):
+    id: UUID
+    created_at: datetime
+
+    class Config:
+        orm_mode = True
