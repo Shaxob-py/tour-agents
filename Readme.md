@@ -498,25 +498,6 @@ git commit -m "✨ feat(api): add trip recommendation endpoint"
 # 🚀 Push and create PR
 git push origin feature/amazing-new-feature
 ```
-
-### 📝 **Commit Convention**
-
-<div align="center">
-
-| Type | Description | Example |
-|------|-------------|---------|
-| ✨ `feat` | New feature | `✨ feat(auth): add OTP verification` |
-| 🐛 `fix` | Bug fix | `🐛 fix(api): handle null trip data` |
-| 📚 `docs` | Documentation | `📚 docs: update API examples` |
-| 🎨 `style` | Code formatting | `🎨 style: format with black` |
-| ♻️ `refactor` | Code refactoring | `♻️ refactor(db): optimize queries` |
-| 🧪 `test` | Adding tests | `🧪 test(auth): add login tests` |
-| ⚡ `perf` | Performance improvement | `⚡ perf(redis): add caching layer` |
-| 🗄️ `db` | Database changes | `🗄️ db: add trip categories table` |
-| 🔒 `security` | Security enhancement | `🔒 security: add rate limiting` |
-
-</div>
-
 ## 🔧 Technology Stack
 
 <div align="center">
@@ -587,28 +568,11 @@ git push origin feature/amazing-new-feature
 <details>
 <summary><b>🎯 2025 Development Plans</b></summary>
 
-### 🚀 **Q1 2025**
-- [ ] 🌐 WebSocket real-time chat implementation
-- [ ] 📱 Mobile-optimized API endpoints
-- [ ] 🔊 Voice AI integration for hands-free interaction
-- [ ] 🎨 Admin dashboard with analytics
-
 ### 🔥 **Q2 2025**
-- [ ] 🌍 Multi-language AI responses (10+ languages)
-- [ ] 🤖 Advanced ML recommendation engine
-- [ ] 📊 Real-time analytics dashboard
+- [ ] 🌍 Multi-language AI responses (2 + languages)
 - [ ] 🔒 OAuth2 social login integration
-
-### ⚡ **Q3 2025**
-- [ ] 🚀 Kubernetes deployment manifests
-- [ ] 📈 Comprehensive monitoring & logging
-- [ ] 🌟 GraphQL API endpoints
-- [ ] 🎯 A/B testing framework
-
-### 🏆 **Q4 2025**
 - [ ] 🤖 Custom AI model training
 - [ ] 🌐 Global CDN integration
-- [ ] 📱 Native mobile SDK
 - [ ] 🚀 Serverless deployment options
 
 </details>
@@ -627,7 +591,6 @@ git push origin feature/amazing-new-feature
 - 🤖 AI chat endpoints integration
 - 🐳 Docker containerization setup
 - 📚 Comprehensive API documentation
-- 🧪 Testing framework implementation
 
 ### 🔄 **v0.9.0** (2025-08-25) - Beta
 - 🏗️ Project architecture design
@@ -648,22 +611,3 @@ git push origin feature/amazing-new-feature
 [![Discussions](https://img.shields.io/badge/Discussions-45B7D1?style=for-the-badge&logo=github&logoColor=white)](https://github.com/your-username/fastapi-ai-agent/discussions)
 
 </div>
-
-## 💡 Quick Commands
-
-<div align="center">
-
-### ⚡ **One-Liners for Common Tasks**
-
-</div>
-
-```bash
-# 🚀 Complete setup with Docker
-git clone <repo> && cd fastapi-ai-agent && docker-compose up -d
-
-# 🔍 View live logs
-docker-compose logs -f api
-
-# 🗄️ Database operations
-docker-compose exec api alembic upgrade head
-docker-compose exec postgres psql -U travel_user -d travel_
