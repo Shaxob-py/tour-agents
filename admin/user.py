@@ -41,10 +41,6 @@ class AdminModelView(ModelView):
         "phone_number",
         "telegram_id",
         "role",
-        # StringField("username", label="Username", help_text="togri yoz", ),
-        # StringField("phone_number", label="Phone"),
-        # IntegerField("telegram_id", label="Telegram ID"),
-        # EnumField("role", enum=User.Role, label="Role"),
     ]
     label = 'Adminlar'
     identity = 'admins'
