@@ -17,6 +17,4 @@ async def create_support_message(data: CreateSupportSchema, current_user: User):
         return new_msg
 
 
-async def get_support_messages():
-        result = await db.execute(select(SupportMessage))
-        return result.scalars().all()
+

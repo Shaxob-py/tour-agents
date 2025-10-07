@@ -33,7 +33,6 @@ class LoginSchema(BaseModel):
     phone_number: str = Field(..., min_length=1, examples=['998901001010'])
 
 
-
 class ImageSchema(BaseModel):
     url: str
 
@@ -58,7 +57,6 @@ class RefreshTokenSchema(BaseModel):
 class TokenSchema(BaseModel):
     phone_number: str = Field(..., min_length=1, examples=['998901001010'])
     code: str
-
 
 
 class UserSchema(BaseModel):
@@ -100,10 +98,6 @@ class UserDetailsSchema(BaseModel):
         from_attributes = True
 
 
-
-
-
-
 class CreateSupportSchema(BaseModel):
     message: str
 
@@ -114,4 +108,3 @@ class ReadSupportSchema(CreateSupportSchema):
 
     class Config:
         from_attributes = True
-

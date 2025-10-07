@@ -1,6 +1,7 @@
 import os
-from datetime import datetime
 import random
+from datetime import datetime
+
 import aiofiles
 import httpx
 from starlette import status
@@ -61,7 +62,6 @@ class AIService:
 
             random_image = random.choice(results)
             image_url = random_image["urls"]["regular"]
-
 
             img_resp = await client.get(image_url)
             if img_resp.status_code != status.HTTP_200_OK:

@@ -1,5 +1,5 @@
 from starlette_admin import IntegerField, EnumField, StringField, fields
-from starlette_admin.contrib.sqla import ModelView, Admin
+from starlette_admin.contrib.sqla import ModelView
 
 from database import User
 
@@ -34,6 +34,7 @@ class UserModelView(ModelView):
     def get_count_query(self, request):
         return super().get_count_query(request).where(User.role == User.Role.USER)
 
+
 class AdminModelView(ModelView):
     fields = [
         "id",
@@ -47,15 +48,11 @@ class AdminModelView(ModelView):
     exclude_fields_from_list = ["password"]
     searchable_fields = ["username", "phone_number"]
 
-
-
     def get_list_query(self, request):
         return super().get_list_query(request).where(User.role == User.Role.ADMIN)
 
     def get_count_query(self, request):
         return super().get_count_query(request).where(User.role == User.Role.ADMIN)
-
-
 
 
 class SupportMessageAdmin(ModelView):
@@ -76,4 +73,3 @@ class SupportMessageAdmin(ModelView):
 
     async def can_delete(self, request):
         return True
-

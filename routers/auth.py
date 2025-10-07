@@ -1,7 +1,8 @@
 from fastapi import APIRouter, HTTPException
-from fastapi.params import Depends, Body
+from fastapi.params import Depends
 from fastapi.responses import ORJSONResponse
 from starlette import status
+
 from database import User
 from schemas.base_schema import LoginSchema, LoginSuccessSchema, RefreshTokenSchema, TokenSchema
 from services.otp_services import OtpService

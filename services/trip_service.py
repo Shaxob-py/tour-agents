@@ -1,8 +1,9 @@
+from datetime import date
+from typing import Optional
+
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
-from typing import Optional
-from datetime import date
 
 from database.trips import Trip
 

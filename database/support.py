@@ -1,17 +1,21 @@
 from datetime import datetime
-from sqlalchemy import Column, DateTime, Text, ForeignKey, String
+
+from sqlalchemy import DateTime, Text, ForeignKey, String
 from sqlalchemy.dialects.postgresql import UUID
-from uuid import uuid4
+from sqlalchemy.orm import relationship, Mapped, mapped_column
+from sqlalchemy.sql.functions import func
 
-from sqlalchemy.orm import relationship
-
-from database.base_model import Base
+from database.base_model import Model
 
 
-class SupportMessage(Base):
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
-    user = relationship("User", back_populates="support_messages")
-    message = Column(Text, nullable=False)
-    phone_number = Column(String, nullable=True)
-    created_at = Column(DateTime, default=lambda: datetime.now().replace(tzinfo=None))
-    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"))
+class SupportMessage(Model):
+    message: Mapped[str] = mapped_column(Text, nullable=False)
+    phone_number: Mapped[str | None] = mapped_column(String, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+
+    user_id: Mapped[UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE")
+    )
+
+    user: Mapped["User"] = relationship("User", back_populates="support_messages")

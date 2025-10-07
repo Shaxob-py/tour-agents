@@ -67,7 +67,7 @@ class User(CreatedModel):
             select(cls)
             .where(cls.id == user_id)
             .options(
-                selectinload(cls.trips).selectinload(Trip.images)  # <--- два join'а
+                selectinload(cls.trips).selectinload(Trip.images)
             )
         )
         return result.scalar_one_or_none()

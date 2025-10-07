@@ -13,9 +13,9 @@ class OtpService:
         _ttl = self.redis_client.ttl(_key)
         if _ttl > 0:
             return False, _ttl
-        self.redis_client.set(_key , code, ex=expire_time) # noqa
+        self.redis_client.set(_key, code, ex=expire_time)  # noqa
         print(f"🔑 OTP code: {code} , phone: {_key}")
-        await verification_send_telegram(user.telegram_id, code) # noqa
+        await verification_send_telegram(user.telegram_id, code)  # noqa
         return True, 0
 
     async def verify_code_telegram(self, phone: str, code: str) -> tuple[bool, dict | None]:
