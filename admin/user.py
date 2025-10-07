@@ -1,5 +1,5 @@
-from starlette_admin import IntegerField, EnumField, StringField
-from starlette_admin.contrib.sqla import ModelView
+from starlette_admin import IntegerField, EnumField, StringField, fields
+from starlette_admin.contrib.sqla import ModelView, Admin
 
 from database import User
 
@@ -58,3 +58,26 @@ class AdminModelView(ModelView):
 
     def get_count_query(self, request):
         return super().get_count_query(request).where(User.role == User.Role.ADMIN)
+
+
+
+
+class SupportMessageAdmin(ModelView):
+    label = "Support Messages"
+    icon = "fa fa-envelope"
+
+    fields = [
+        fields.StringField("phone_number", label="Telefon raqami", read_only=True),
+        fields.TextAreaField("message", label="Xabar matni", read_only=True),
+        fields.DateTimeField("created_at", label="Yuborilgan vaqt", read_only=True),
+    ]
+
+    async def can_create(self, request):
+        return False
+
+    async def can_edit(self, request):
+        return False
+
+    async def can_delete(self, request):
+        return True
+

@@ -25,6 +25,7 @@ class User(CreatedModel):
     trips: Mapped[list["Trip"]] = relationship("Trip", back_populates="created_by")  # noqa
     trips_like: Mapped[list["TripLike"]] = relationship("TripLike", back_populates="user")
     password: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    support_messages = relationship("SupportMessage", back_populates="user")
     role: Mapped[Role] = mapped_column(
         SQLEnum(Role, name="role"),
         default=Role.USER,
