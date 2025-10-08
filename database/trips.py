@@ -1,6 +1,7 @@
 from typing import Optional
 
 from sqlalchemy import String, Date, Boolean, ForeignKey, Integer, update, delete
+from sqlalchemy import literal_column
 from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import mapped_column, relationship, Mapped
@@ -40,6 +41,14 @@ class Trip(CreatedModel):
 
     @classmethod
     async def get(cls, id_):
+        update_query = (
+            update(cls)
+            .where(cls.id == id_)
+            .values(view_count=literal_column("view_count") + 1)
+        )
+        await db.execute(update_query)
+        await db.commit()
+
         query = (
             select(cls)
             .where(cls.id == id_)
@@ -49,15 +58,6 @@ class Trip(CreatedModel):
             )
         )
         return (await db.execute(query)).scalar_one_or_none()
-
-    @classmethod
-    async def update_view_count(cls, id_: int):
-        query = (
-            update(cls)
-            .where(cls.id == id_).values(view_count=+1)
-        )
-        await db.execute(query)
-        await db.commit()
 
     @classmethod
     async def like_update(cls, id_: UUID, is_like: bool, ):
@@ -87,21 +87,36 @@ class TripLike(Model):
 
     @classmethod
     async def update_like(cls, trip_id: UUID, user_id: UUID, is_like: bool):
-        query = await db.execute(select(cls).where(cls.trip_id == trip_id, cls.user_id == user_id))
-
+        query = await db.execute(
+            select(cls).where(cls.trip_id == trip_id, cls.user_id == user_id)
+        )
         existing_record = query.scalar_one_or_none()
 
-        key = 'dis' * (not is_like) + 'likes_count'
-
-        kwargs = {
-            key: getattr(Trip, key) + bool(existing_record) * (-2) + 1
-        }
+        new_key = 'likes_count' if is_like else 'dislikes_count'
+        updates = {}
 
         if existing_record:
-            await db.execute(delete(cls).where(cls.trip_id == trip_id, cls.user_id == user_id))
+            if existing_record.is_like == is_like:
+                await db.execute(
+                    delete(cls).where(cls.trip_id == trip_id, cls.user_id == user_id)
+                )
+                updates[new_key] = getattr(Trip, new_key) - 1
+            else:
+                old_key = 'likes_count' if existing_record.is_like else 'dislikes_count'
+
+                updates[old_key] = getattr(Trip, old_key) - 1
+                updates[new_key] = getattr(Trip, new_key) + 1
+                await db.execute(
+                    update(cls)
+                    .where(cls.trip_id == trip_id, cls.user_id == user_id)
+                    .values(is_like=is_like)
+                )
         else:
             await cls.create(user_id=user_id, trip_id=trip_id, is_like=is_like)
-
-        await db.execute(update(Trip).where(Trip.id == trip_id).values(**kwargs))
+            updates[new_key] = getattr(Trip, new_key) + 1
+        if updates:
+            await db.execute(
+                update(Trip).where(Trip.id == trip_id).values(**updates)
+            )
 
         await db.commit()

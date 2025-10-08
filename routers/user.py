@@ -32,3 +32,15 @@ async def user_detailed(id: str):
     return ResponseSchema[UserDetailsSchema](
         message='User detail',
         data=user)
+
+
+@user_router.patch("", response_model=ResponseSchema)
+async def update_user(username: str, current_user: User = Depends(get_current_user)):
+    await User.update(current_user.id, username=username)
+    return ResponseSchema(
+        message='User Updated',
+        data=None
+    )
+
+
+
