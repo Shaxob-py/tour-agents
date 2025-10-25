@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import os
 import sys
 
 from aiogram import Bot, Dispatcher, F
@@ -7,7 +8,7 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ContentType, ParseMode
 from aiogram.filters import CommandStart
 from aiogram.fsm.context import FSMContext
-from aiogram.types import Message
+from aiogram.types import Message, FSInputFile
 from aiogram.utils.i18n import I18n, FSMI18nMiddleware
 from aiogram.utils.i18n import gettext as _, lazy_gettext as __
 
@@ -61,12 +62,44 @@ async def handler_language(message: Message, state: FSMContext) -> None:
         )
 
 
+async def send_trip_to_telegram(
+        group_id: int,
+        data,
+        current_user,
+        return_text: str,
+        image_url: str,
+        days: int,
+        trip_id: int
+):
+    site_url = f"http://0.0.0.0:3000/trip/{trip_id}"
+    print(image_url)
+    msg = (
+        f"✈️ *Yangi AI tavsiya safari!*\n\n"
+        f"📍 Yo'nalish: {data.to}\n"
+        f"🚩 Qayerdan: {data.where}\n"
+        f"📅 Kunlar soni: {days}\n"
+        f"👤 Foydalanuvchi: {current_user}\n\n"
+        f"🧠 Tavsif:\n{return_text[:500]}...\n\n"
+        f"🌍 [Saytga o'tish]({site_url})"
+    )
+    full_image_url = os.path.join(image_url.lstrip('/'))
+    print(full_image_url)
+
+    await bot.send_photo(
+        chat_id=group_id,
+        photo=FSInputFile(full_image_url),
+        caption=msg,
+        parse_mode="Markdown"
+    )
+
+
 i18n = I18n(path="locales", default_locale="uz")
 dp.update.middleware(FSMI18nMiddleware(i18n=i18n))
 
+bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+
 
 async def main() -> None:
-    bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
     await dp.start_polling(bot)
 
 

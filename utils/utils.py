@@ -3,6 +3,7 @@ from random import randint
 
 import httpx
 
+
 from core.config import settings
 from database import User
 

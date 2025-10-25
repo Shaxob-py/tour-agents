@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from fastapi import APIRouter, Depends
 
 from database import User
@@ -27,11 +29,17 @@ async def create_order(date: LoginSchema):
 
 
 @user_router.get("", response_model=ResponseSchema)
-async def user_detailed(id: str):
+async def user_detailed(id: UUID):
     user = await User.get_user_trips(id)
+    if user:
+        return ResponseSchema[UserDetailsSchema](
+            message='User detail',
+            data=user)
     return ResponseSchema[UserDetailsSchema](
-        message='User detail',
-        data=user)
+        message='User not found',
+        data=None)
+
+
 
 
 @user_router.patch("", response_model=ResponseSchema)

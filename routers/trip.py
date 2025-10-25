@@ -6,20 +6,21 @@ from fastapi import APIRouter, Query, HTTPException
 from fastapi.params import Depends
 from fastapi.responses import ORJSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm.sync import update
 from starlette import status
 from starlette.status import HTTP_500_INTERNAL_SERVER_ERROR
 
+from bot.main import send_trip_to_telegram
 from const import TOUR_PROMPT
+from core.config import settings
 from database import Trip, User
-from database.base_model import get_session, db
+from database.base_model import get_session
 from database.trips import TripLike, TripImage
 from schemas.base_schema import TripSchema, ResponseSchema, ReadTripSchema, TripLikeRequest, ListResponseSchema
 from services.ai_servise import AIService, ai_service
 from services.trip_service import TripService
 from utils.security import get_current_user
 from utils.utils import get_travel_days
-from sqlalchemy import String, Date, Boolean, ForeignKey, Integer, update, delete
+
 trip_agents = APIRouter(tags=["Trip"])
 
 
@@ -51,13 +52,15 @@ async def create_tour(
 
     await TripImage.create(
         trip_id=trip.id,
-        url=image,
-    )
+        url=image, )
+
+    await send_trip_to_telegram(settings.GROUP_ID, data, current_user.username, return_text, image, days, trip.id)
+
+
     return ORJSONResponse({
         'messages': return_text,
         'image': image})
 
-    # return {"message": "Success", "trip_id": str(trip_id), "is_like": is_like}
 
 
 @trip_agents.get("/trips", response_model=ListResponseSchema[ReadTripSchema])
@@ -95,9 +98,6 @@ async def like_trip(data: TripLikeRequest, current_user: User = Depends(get_curr
 
 @trip_agents.get("/trips/{id}", response_model=ResponseSchema[ReadTripSchema])
 async def get_tour_id(id: UUID):
-
-
-
     trip = await Trip.get(id)
 
     if trip is None:
@@ -105,8 +105,6 @@ async def get_tour_id(id: UUID):
             status_code=status.HTTP_404_NOT_FOUND,
             content={'message': 'trip not found', 'data': None}
         )
-    # trip.view_count += 1
-    # await Trip.update_view_count(id)
 
     return ResponseSchema[ReadTripSchema](
         message='Trip detail',

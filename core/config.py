@@ -31,6 +31,8 @@ class Settings(BaseSettings):
     UNSPLASH_ACCESS_KEY: str = Field()
     UNSPLASH_URL: str = Field()
 
+    GROUP_ID: int = Field()
+
     @property
     def postgres_sync_url(self):
         return (f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:"

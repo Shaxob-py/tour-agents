@@ -1,5 +1,6 @@
 from enum import Enum
 from typing import Optional
+from uuid import UUID
 
 from passlib.context import CryptContext
 from sqlalchemy import Enum as SQLEnum
@@ -62,7 +63,7 @@ class User(CreatedModel):
         return pwd_context.hash(password)
 
     @classmethod
-    async def get_user_trips(cls, user_id: str):
+    async def get_user_trips(cls, user_id: UUID):
         result = await db.execute(
             select(cls)
             .where(cls.id == user_id)

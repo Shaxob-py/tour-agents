@@ -87,7 +87,7 @@
             var phoneInput = $('#phone').val();
 
             // Modify the input value to remove the country code and any non-digit characters
-            var modifiedPhoneInput = phoneInput.replace(/^\+|\D/g, '').replace('998', '');
+            var modifiedPhoneInput = phoneInput.replace(/^\+|\D/g, '').replace('+', '');
 
             // Set the modified value back to the input field
             var newInput = $('<input>').attr({
